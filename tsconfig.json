@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "noResolve": true,
+        "jsx": "react",
+        "target": "es5",
+        "moduleResolution": "node"
+    }
+}
