@@ -16,6 +16,10 @@ export class Preview extends React.Component<any, any> {
             });
         });
     }
+    componentDidUpdate() {
+        const ctx = this.refs.field.getContext('2d');
+        this.drawField(ctx);
+    }
     componentDidMount() {
         const ctx = this.refs.field.getContext('2d');
         this.drawField(ctx);
