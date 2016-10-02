@@ -8,7 +8,8 @@ class Life extends React.Component<any, any> {
         this.state = {
             field: this.initField(50, 50)
         }
-        setInterval(this.step, 1000);
+
+        setInterval(this.step, 10);
     }
     initField(width, height) {
         let field = [];
@@ -46,7 +47,9 @@ class Life extends React.Component<any, any> {
             });
         })});
     };
-
+    componentDidMount() {
+        //this.step()
+    }
     countNeighbours(i, j) {
         const field = this.state.field;
         const rowLimit = field.length-1;
@@ -56,7 +59,7 @@ class Life extends React.Component<any, any> {
         for(let x = Math.max(0, i-1); x <= Math.min(i+1, rowLimit); x++) {
             for(let y = Math.max(0, j-1); y <= Math.min(j+1, columnLimit); y++) {
                 if(x !== i || y !== j) {
-                    if (field[x, y]) {
+                    if (field[x][y]) {
                         n++;
                     }
                 }
