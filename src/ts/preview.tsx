@@ -21,12 +21,34 @@ export class Preview extends React.Component<any, any> {
         this.drawField(ctx);
     }
     componentDidMount() {
-        const ctx = this.refs.field.getContext('2d');
-        this.refs.field.addEventListener('click', (e) => {
-            this.props.onClick({
-                x: Math.floor(e.layerX / this.cellHeight),
-                y: Math.floor(e.layerY / this.cellWidth)
-            })
+        var field = this.refs.field;
+        const ctx = field.getContext('2d');
+
+        let lastCell;
+        let isMouseDown = false;
+
+        let clickHandle = (e) => {
+            const x = Math.floor(e.layerX / this.cellHeight);
+            const y = Math.floor(e.layerY / this.cellWidth);
+            if (lastCell && lastCell.x == x && lastCell.y == y) {
+                return;
+            }
+            console.log(x, y);
+            this.props.onClick({x, y});
+            lastCell = {x, y};
+        };
+
+        field.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            clickHandle(e);
+        });
+        field.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+        field.addEventListener('mousemove', (e) => {
+            if (isMouseDown) {
+                clickHandle(e);
+            }
         });
         this.drawField(ctx);
     }
