@@ -10,9 +10,6 @@ class Life extends React.Component<any, any> {
             isReady: false
         };
 
-        if (this.state.isReady) {
-            setInterval(this.step, 100);
-        }
         [
             'onClick',
             'step'
@@ -29,6 +26,13 @@ class Life extends React.Component<any, any> {
         return field;
     }
     onClick(pos) {
+        if (pos.y == 0 && pos.x == 0 ) {
+            setInterval(this.step, 100);
+            this.setState({
+                isReady: true
+            });
+            return;
+        }
         let field = this.state.field;
         field[pos.y][pos.x] = !field[pos.y][pos.x];
         this.setState({
