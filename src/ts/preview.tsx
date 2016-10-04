@@ -23,7 +23,10 @@ export class Preview extends React.Component<any, any> {
     componentDidMount() {
         var field = this.refs.field;
         const ctx = field.getContext('2d');
-
+        this.addClickHandle(field);
+        this.drawField(ctx);
+    }
+    addClickHandle(field) {
         let lastCell;
         let isMouseDown = false;
 
@@ -50,7 +53,6 @@ export class Preview extends React.Component<any, any> {
                 clickHandle(e);
             }
         });
-        this.drawField(ctx);
     }
     render() {
         const width = this.props.width || 150;
