@@ -6,22 +6,36 @@ class Life extends React.Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            field: this.initField(50, 50)
-        }
+            field: this.initField(50, 50),
+            isReady: false
+        };
 
-        setInterval(this.step, 10);
+        if (this.state.isReady) {
+            setInterval(this.step, 100);
+        }
+        [
+            'onClick',
+            'step'
+        ].forEach(fn => this[fn] = this[fn].bind(this));
     }
     initField(width, height) {
         let field = [];
         for (let i=0; i<width; i++) {
             field[i] = [];
             for (let j=0; j<height; j++) {
-                field[i][j] = Math.random() < 0.3;
+                field[i][j] = Math.random() < 0.05;
             }
         }
         return field;
     }
-    step = () => {
+    onClick(pos) {
+        let field = this.state.field;
+        field[pos.y][pos.x] = !field[pos.y][pos.x];
+        this.setState({
+            field: field
+        });
+    }
+    step() {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
@@ -69,7 +83,7 @@ class Life extends React.Component<any, any> {
     }
     render() {
         const field = this.state.field;
-        return <Preview width={1000} height={1000} field={field} />;
+        return <Preview width={1000} height={1000} field={field} onClick={this.onClick}/>;
     }
 }
 ReactDOM.render(<Life />, document.querySelector("#root"));
