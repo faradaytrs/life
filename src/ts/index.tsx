@@ -29,8 +29,13 @@ class Life extends React.Component<any, any> {
     onClick(pos) {
         const y = pos.y;
         const x = pos.x;
+        // todo
         if (y == 0 && x == 0 ) {
             this.runGame();
+            return;
+        }
+        if (y == 0 && x == 1 ) {
+            this.step();
             return;
         }
         let field = this.state.field;

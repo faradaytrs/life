@@ -47,6 +47,7 @@ export class Preview extends React.Component<any, any> {
         });
         field.addEventListener('mouseup', () => {
             isMouseDown = false;
+            lastCell = null;
         });
         field.addEventListener('mousemove', (e) => {
             if (isMouseDown) {
