@@ -12,6 +12,7 @@ class Life extends React.Component<any, any> {
 
         [
             'onClick',
+            'runGame',
             'step'
         ].forEach(fn => this[fn] = this[fn].bind(this));
     }
@@ -26,18 +27,20 @@ class Life extends React.Component<any, any> {
         return field;
     }
     onClick(pos) {
-        if (pos.y == 0 && pos.x == 0 ) {
-            setInterval(this.step, 100);
-            this.setState({
-                isReady: true
-            });
+        const y = pos.y;
+        const x = pos.x;
+        if (y == 0 && x == 0 ) {
+            this.runGame();
             return;
         }
         let field = this.state.field;
-        field[pos.y][pos.x] = !field[pos.y][pos.x];
+        field[y][x] = !field[y][x];
         this.setState({
             field: field
         });
+    }
+    runGame() {
+        setInterval(this.step, 100);
     }
     step() {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
