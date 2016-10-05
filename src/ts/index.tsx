@@ -89,7 +89,12 @@ class Life extends React.Component<any, any> {
         this.setState({
             speed: speed
         })
-    }
+    };
+    reset = () => {
+        this.setState({
+            field: this.initField(50, 50)
+        })
+    };
     render() {
         const field = this.state.field;
         const running = this.state.running;
@@ -97,6 +102,7 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
                 <input value={this.state.speed} onChange={this.updateSpeed} type="number"/>
+                <button onClick={this.reset}>Reset</button>
                 <Preview width={1000} height={1000} field={field} onClick={this.onClick}/>;
             </div>
     }
