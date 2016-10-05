@@ -102,12 +102,14 @@ class Life extends React.Component<any, any> {
     render() {
         const field = this.state.field;
         const running = this.state.running;
+        const width = this.props.width;
+        const height = this.props.height;
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
                 <input value={this.state.speed} onChange={this.updateSpeed} type="number"/>
                 <button onClick={this.reset}>Reset</button>
-                <Preview width={1000} height={1000} field={field} onClick={this.onClick}/>;
+                <Preview width={width} height={height} field={field} onClick={this.onClick}/>;
             </div>
     }
 }

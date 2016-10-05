@@ -31,8 +31,8 @@ export class Preview extends React.Component<any, any> {
         let isMouseDown = false;
 
         let clickHandle = (e) => {
-            const x = Math.floor(e.layerX / this.cellHeight);
-            const y = Math.floor(e.layerY / this.cellWidth);
+            const x = Math.floor(e.layerX / this.cellWidth);
+            const y = Math.floor(e.layerY / this.cellHeight);
             if (lastCell && lastCell.x == x && lastCell.y == y) {
                 return;
             }
@@ -56,8 +56,8 @@ export class Preview extends React.Component<any, any> {
         });
     }
     render() {
-        const width = this.props.width || 150;
-        const height = this.props.height || 150;
+        const width = this.props.width*this.cellWidth;
+        const height = this.props.height*this.cellHeight;
         return <canvas width={width} height={height} ref="field">1</canvas>
     }
 }
