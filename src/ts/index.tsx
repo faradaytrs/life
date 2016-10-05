@@ -28,7 +28,7 @@ class Life extends React.Component<any, any> {
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
-        field[y][x] = !field[y][x];
+        field[y][x] = (field[y][x] !== false) ? false : new Cell();
         this.setState({
             field: field
         });
