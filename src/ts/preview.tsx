@@ -1,7 +1,7 @@
 import * as React from 'react';
 export class Preview extends React.Component<any, any> {
-    cellHeight: number
-    cellWidth: number
+    cellHeight: number;
+    cellWidth: number;
     constructor(props) {
         super(props);
         this.cellHeight = 20;

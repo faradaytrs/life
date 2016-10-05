@@ -7,14 +7,9 @@ class Life extends React.Component<any, any> {
         super(props);
         this.state = {
             field: this.initField(50, 50),
-            isReady: false
+            running: false,
+            speed: 100
         };
-
-        [
-            'onClick',
-            'runGame',
-            'step'
-        ].forEach(fn => this[fn] = this[fn].bind(this));
     }
     initField(width, height) {
         let field = [];
@@ -26,28 +21,21 @@ class Life extends React.Component<any, any> {
         }
         return field;
     }
-    onClick(pos) {
+    onClick = (pos) => {
         const y = pos.y;
         const x = pos.x;
-        // todo
-        if (y == 0 && x == 0 ) {
-            this.runGame();
-            return;
-        }
-        if (y == 0 && x == 1 ) {
-            this.step();
-            return;
-        }
         let field = this.state.field;
         field[y][x] = !field[y][x];
         this.setState({
             field: field
         });
-    }
-    runGame() {
-        setInterval(this.step, 100);
-    }
-    step() {
+    };
+    runGame = (evt) => {
+        this.setState({
+            running: !this.state.running
+        })
+    };
+    step = () => {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
@@ -55,17 +43,17 @@ class Life extends React.Component<any, any> {
         const rules = (cell, x, y) => {
             const neighbours = this.countNeighbours(x, y);
             //console.log(neighbours, cell);
-            if (cell == true && neighbours > 4) {
+            if (cell === true && neighbours >= 4) {
                 return false;
             }
-            if (cell == true && neighbours <= 1) {
+            if (cell === true && neighbours <= 1) {
                 return false;
             }
-            if (cell == false && neighbours === 3) {
+            if (cell === false && neighbours === 3) {
                 return true;
             }
             return cell;
-        }
+        };
         const field = this.state.field;
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
@@ -73,9 +61,12 @@ class Life extends React.Component<any, any> {
             });
         })});
     };
-    componentDidMount() {
-        //this.step()
-    }
+    componentDidUpdate = () => {
+        const speed = this.state.speed;
+        if (this.state.running === true) {
+            setTimeout(this.step, speed)
+        }
+    };
     countNeighbours(i, j) {
         const field = this.state.field;
         const rowLimit = field.length-1;
@@ -93,9 +84,21 @@ class Life extends React.Component<any, any> {
         }
         return n;
     }
+    updateSpeed = (evt) => {
+        const speed = evt.target.value;
+        this.setState({
+            speed: speed
+        })
+    }
     render() {
         const field = this.state.field;
-        return <Preview width={1000} height={1000} field={field} onClick={this.onClick}/>;
+        const running = this.state.running;
+        return <div>
+                <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
+                <button onClick={this.step}>Step</button>
+                <input value={this.state.speed} onChange={this.updateSpeed} type="number"/>
+                <Preview width={1000} height={1000} field={field} onClick={this.onClick}/>;
+            </div>
     }
 }
 ReactDOM.render(<Life />, document.querySelector("#root"));
