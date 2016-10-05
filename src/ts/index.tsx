@@ -16,12 +16,16 @@ class Life extends React.Component<any, any> {
             speed: 100
         };
     }
-    initField(width, height) {
+    initField(width, height, empty?) {
         let field = [];
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
+                if (!empty) {
+                    field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
+                } else {
+                    field[i][j] = false;
+                }
             }
         }
         return field;
@@ -49,6 +53,20 @@ class Life extends React.Component<any, any> {
         })
     };
     step = () => {
+        // в пустой (мёртвой) клетке, рядом с которой ровно три живые клетки, зарождается жизнь;
+        // если у живой клетки есть две или три живые соседки, то эта клетка продолжает жить;
+        // в противном случае (если соседей меньше двух или больше трёх) клетка умирает («от одиночества» или «от перенаселённости»)
+        const rulesFix = (cell, x, y) => {
+            const neighbours = this.getNeighbours(x, y);
+            if (cell && (neighbours.length == 2 || neighbours.length == 3)) {
+                return cell;
+            }
+            if (cell == false && neighbours.length === 3) {
+                return new Cell(neighbours);
+            }
+            return false;
+        };
+
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
@@ -110,6 +128,13 @@ class Life extends React.Component<any, any> {
             field: this.initField(width, height)
         })
     };
+    clear = () => {
+        const width = this.props.width;
+        const height = this.props.height;
+        this.setState({
+            field: this.initField(width, height, true)
+        })
+    };
     render() {
         const field = this.state.field;
         const running = this.state.running;
@@ -119,6 +144,7 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
                 <input step={100} value={this.state.speed} onChange={this.updateSpeed} type="number"/>
+                <button onClick={this.clear}>Clear</button>
                 <button onClick={this.reset}>Reset</button>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>;
             </div>
