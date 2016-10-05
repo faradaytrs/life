@@ -58,7 +58,7 @@ class Life extends React.Component<any, any> {
             if (cell == true && neighbours > 4) {
                 return false;
             }
-            if (cell == true && neighbours < 1) {
+            if (cell == true && neighbours <= 1) {
                 return false;
             }
             if (cell == false && neighbours === 3) {
