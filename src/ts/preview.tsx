@@ -11,7 +11,7 @@ export class Preview extends React.Component<any, any> {
         const field = this.props.field;
         field.forEach((row, i) => {
             row.map((cell, j) => {
-                ctx.fillStyle = cell ? "black": "white";
+                ctx.fillStyle = cell ? cell.color : "white";
                 ctx.fillRect(j * this.cellWidth, i * this.cellHeight, this.cellWidth, this.cellHeight);
             });
         });

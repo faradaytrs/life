@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
+import {Cell} from './cell';
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -18,7 +19,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = Math.random() < 0.1;
+                field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
             }
         }
         return field;
@@ -44,15 +45,15 @@ class Life extends React.Component<any, any> {
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const rules = (cell, x, y) => {
             const neighbours = this.countNeighbours(x, y);
-            //console.log(neighbours, cell);
-            if (cell === true && neighbours >= 4) {
+
+            if (cell && neighbours >= 4) {
                 return false;
             }
-            if (cell === true && neighbours <= 1) {
+            if (cell && neighbours <= 1) {
                 return false;
             }
             if (cell === false && neighbours === 3) {
-                return true;
+                return new Cell();
             }
             return cell;
         };
