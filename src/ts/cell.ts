@@ -3,7 +3,14 @@
  */
 export class Cell {
     color: number;
-    constructor(color = (Math.random()*0xFFFFFF<<0)) {
-        this.color = color;
+    constructor(parents = []) {
+        if (parents.length === 0) {
+            this.color = Math.random()*0xFFFFFF<<0;
+        } else {
+            //Rework!!
+            this.color = parents.reduce((sum, cell) => {
+                return sum + cell.color;
+            }, 0) / parents.length;
+        }
     }
 }

@@ -44,16 +44,16 @@ class Life extends React.Component<any, any> {
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const rules = (cell, x, y) => {
-            const neighbours = this.countNeighbours(x, y);
+            const neighbours = this.getNeighbours(x, y);
 
-            if (cell && neighbours >= 4) {
+            if (cell && neighbours.length >= 4) {
                 return false;
             }
-            if (cell && neighbours <= 1) {
+            if (cell && neighbours.length <= 1) {
                 return false;
             }
-            if (cell === false && neighbours === 3) {
-                return new Cell();
+            if (cell === false && neighbours.length === 3) {
+                return new Cell(neighbours);
             }
             return cell;
         };
@@ -86,9 +86,6 @@ class Life extends React.Component<any, any> {
             }
         }
         return neighbours;
-    }
-    countNeighbours(i, j) {
-        return this.getNeighbours(i, j).length;
     }
     updateSpeed = (evt) => {
         const speed = evt.target.value;
