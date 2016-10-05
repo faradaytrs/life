@@ -1,18 +1,45 @@
 import * as React from 'react';
-export class Preview extends React.Component<any, any> {
+
+interface PreviewP {
+    field;
+    width;
+    height;
+    modelPrev;
+    onClick: Function;
+}
+export class Preview extends React.Component<PreviewP, any> {
     cellHeight: number;
     cellWidth: number;
     constructor(props) {
         super(props);
         this.cellHeight = 20;
         this.cellWidth = 20;
+        this.state = {
+            cursorPos: null
+        }
     }
     drawField(ctx: CanvasRenderingContext2D) {
         const field = this.props.field;
+        this.drawThisField(ctx, field);
+        if (this.props.modelPrev) {
+            this.drawThisField(ctx, this.props.modelPrev, true);
+        }
+    }
+    // для отрисовки превью еще не установленной на доску модели
+    drawThisField(ctx: CanvasRenderingContext2D, field, renderModel?) {
+        let xBegin = 0;
+        let yBegin = 0;
+
+        if (renderModel) {
+            const cursorPos = this.state.cursorPos;
+            xBegin = cursorPos.x;
+            yBegin = cursorPos.y;
+        }
+
         field.forEach((row, i) => {
             row.map((cell, j) => {
                 ctx.fillStyle = cell ? '#' + cell.color.toString(16) : "white";
-                ctx.fillRect(j * this.cellWidth, i * this.cellHeight, this.cellWidth, this.cellHeight);
+                ctx.fillRect((yBegin + j) * this.cellWidth, (xBegin + i) * this.cellHeight, this.cellWidth, this.cellHeight);
             });
         });
     }
@@ -30,34 +57,43 @@ export class Preview extends React.Component<any, any> {
         let lastCell;
         let isMouseDown = false;
 
-        let clickHandle = (e) => {
+        let mouseMoveHandle = (e) => {
             const x = Math.floor(e.layerX / this.cellWidth);
             const y = Math.floor(e.layerY / this.cellHeight);
             if (lastCell && lastCell.x == x && lastCell.y == y) {
-                return;
+                return false;
             }
-            console.log(x, y);
-            this.props.onClick({x, y});
-            lastCell = {x, y};
+            const pos = {x, y};
+            this.setState({
+                cursorPos: pos
+            });
+            lastCell = pos;
+            return true;
         };
 
         field.addEventListener('mousedown', (e) => {
             isMouseDown = true;
-            clickHandle(e);
+            mouseMoveHandle(e);
+            this.props.onClick(this.state.cursorPos);
         });
         field.addEventListener('mouseup', () => {
             isMouseDown = false;
             lastCell = null;
         });
         field.addEventListener('mousemove', (e) => {
-            if (isMouseDown) {
-                clickHandle(e);
+            let moved = mouseMoveHandle(e);
+            if (moved && isMouseDown) {
+                this.props.onClick(this.state.cursorPos);
             }
         });
     }
     render() {
         const width = this.props.width*this.cellWidth;
         const height = this.props.height*this.cellHeight;
-        return <canvas width={width} height={height} ref="field">1</canvas>
+        const pos = this.state.cursorPos || {};
+        return <div>
+            <canvas width={width} height={height} ref="field">1</canvas>
+            <span>{pos.y + 'x' + pos.x}</span>
+        </div>
     }
 }

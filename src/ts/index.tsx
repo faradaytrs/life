@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
 import {Cell} from './cell';
+import {SelectModel} from "./selectModel";
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -10,6 +11,7 @@ class Life extends React.Component<any, any> {
         const height = this.props.height;
         this.state = {
             field: this.initField(width, height),
+            modelPrev: null,
             running: false,
             speed: 100
         };
@@ -36,6 +38,14 @@ class Life extends React.Component<any, any> {
     runGame = (evt) => {
         this.setState({
             running: !this.state.running
+        })
+    };
+    pauseGame = () => {
+        this.setState({running: false});
+    };
+    setModel = (model) => {
+        this.setState({
+            modelPrev: model
         })
     };
     step = () => {
