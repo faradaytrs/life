@@ -5,17 +5,19 @@ import {Preview} from './preview';
 class Life extends React.Component<any, any> {
     constructor(props) {
         super(props);
+        const width = this.props.width;
+        const height = this.props.height;
         this.state = {
-            field: this.initField(50, 50),
+            field: this.initField(width, height),
             running: false,
             speed: 100
         };
     }
     initField(width, height) {
         let field = [];
-        for (let i=0; i<width; i++) {
+        for (let i=0; i<height; i++) {
             field[i] = [];
-            for (let j=0; j<height; j++) {
+            for (let j=0; j<width; j++) {
                 field[i][j] = Math.random() < 0.05;
             }
         }
@@ -91,8 +93,10 @@ class Life extends React.Component<any, any> {
         })
     };
     reset = () => {
+        const width = this.props.width;
+        const height = this.props.height;
         this.setState({
-            field: this.initField(50, 50)
+            field: this.initField(width, height)
         })
     };
     render() {
@@ -107,4 +111,4 @@ class Life extends React.Component<any, any> {
             </div>
     }
 }
-ReactDOM.render(<Life />, document.querySelector("#root"));
+ReactDOM.render(<Life width={50} height={30} />, document.querySelector("#root"));
