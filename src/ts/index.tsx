@@ -18,7 +18,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = Math.random() < 0.05;
+                field[i][j] = Math.random() < 0.1;
             }
         }
         return field;
@@ -107,7 +107,7 @@ class Life extends React.Component<any, any> {
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
-                <input value={this.state.speed} onChange={this.updateSpeed} type="number"/>
+                <input step={100} value={this.state.speed} onChange={this.updateSpeed} type="number"/>
                 <button onClick={this.reset}>Reset</button>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>;
             </div>
