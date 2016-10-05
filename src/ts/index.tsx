@@ -70,22 +70,25 @@ class Life extends React.Component<any, any> {
             setTimeout(this.step, speed)
         }
     };
-    countNeighbours(i, j) {
+    getNeighbours(i, j) {
         const field = this.state.field;
         const rowLimit = field.length-1;
         const columnLimit = field[0].length-1;
-        let n = 0;
+        let neighbours = [];
 
         for(let x = Math.max(0, i-1); x <= Math.min(i+1, rowLimit); x++) {
             for(let y = Math.max(0, j-1); y <= Math.min(j+1, columnLimit); y++) {
                 if(x !== i || y !== j) {
                     if (field[x][y]) {
-                        n++;
+                        neighbours.push(field[x][y]);
                     }
                 }
             }
         }
-        return n;
+        return neighbours;
+    }
+    countNeighbours(i, j) {
+        return this.getNeighbours(i, j).length;
     }
     updateSpeed = (evt) => {
         const speed = evt.target.value;
