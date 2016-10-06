@@ -135,7 +135,6 @@ class Life extends React.Component<any, any> {
         })
     };
     save = (proxy, config = 'config', evt, field = this.state.field) => {
-        console.log(proxy, config, field);
         localStorage.setItem(config, JSON.stringify(field));
     };
     load = (evt, config = 'config') => {
