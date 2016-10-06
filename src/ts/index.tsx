@@ -176,4 +176,4 @@ class Life extends React.Component<any, any> {
             </div>
     }
 }
-ReactDOM.render(<Life width={50} height={50} />, document.querySelector("#root"));
+ReactDOM.render(<Life width={Math.floor(innerWidth/25)} height={Math.floor(innerHeight/25-2)} />, document.querySelector("#root"));
