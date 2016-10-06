@@ -10,10 +10,19 @@ class Life extends React.Component<any, any> {
         const height = this.props.height;
         this.state = {
             field: this.initField(width, height),
-            modelPrev: null,
-            running: false,
-            speed: 100
+            speed: 100,
+            autoSave: true,
+            interval: false
         };
+    }
+    setRunner = (speed = this.state.speed) => {
+        this.setState({
+            interval: setInterval(this.step, speed)
+        });
+    };
+    removeRunner() {
+        clearInterval(this.state.interval);
+        this.setState({interval: false});
     }
     initField(width, height) {
         let field = [];
@@ -35,9 +44,11 @@ class Life extends React.Component<any, any> {
         });
     };
     runGame = (evt) => {
-        this.setState({
-            running: !this.state.running
-        })
+        if (this.state.interval === false) {
+            this.setRunner()
+        } else {
+            this.removeRunner();
+        }
     };
     pauseGame = () => {
         this.setState({running: false});
@@ -91,10 +102,7 @@ class Life extends React.Component<any, any> {
         })});
     };
     componentDidUpdate = () => {
-        const speed = this.state.speed;
-        if (this.state.running === true) {
-            setTimeout(this.step, speed);
-        }
+
     };
     getNeighbours(i, j) {
         const field = this.state.field;
@@ -122,17 +130,23 @@ class Life extends React.Component<any, any> {
     reset = () => {
         const width = this.props.width;
         const height = this.props.height;
+        if (this.state.autoSave) {
+            this.save(null, 'config', null);
+        }
         this.setState({
             field: this.initField(width, height)
-        })
+        });
     };
     clear = () => {
         const width = this.props.width;
         const height = this.props.height;
         const field = this.state.field;
+        if (this.state.autoSave) {
+            this.save(null, 'config', null);
+        }
         this.setState({
             field: field.map((row) => row.map((cell) => false))
-        })
+        });
     };
     save = (proxy, config = 'config', evt, field = this.state.field) => {
         localStorage.setItem(config, JSON.stringify(field));
@@ -143,9 +157,10 @@ class Life extends React.Component<any, any> {
     };
     render() {
         const field = this.state.field;
-        const running = this.state.running;
+        const running = this.state.interval !== false;
         const width = this.props.width;
         const height = this.props.height;
+        const autoSave = this.state.autoSave;
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
@@ -154,6 +169,7 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.reset}>Reset</button>
                 <button onClick={this.save}>Save</button>
                 <button onClick={this.load}>Load</button>
+                <input checked={autoSave} type="checkbox"/>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }
