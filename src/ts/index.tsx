@@ -57,8 +57,7 @@ class Life extends React.Component<any, any> {
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
-        const rules = (cell, x, y) => {
-            const neighbours = this.getNeighbours(x, y);
+        const rules = (cell, neighbours) => {
             const being = cell.being;
 
             if (being && neighbours.length >= 4) {
@@ -75,7 +74,7 @@ class Life extends React.Component<any, any> {
 
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
-                return rules(Object.assign({}, cell), rowIndex, columnIndex);
+                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex));
             });
         })});
     };
