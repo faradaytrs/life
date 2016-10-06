@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
 import {Cell} from './cell';
-import {SelectModel} from "./selectModel";
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -135,6 +134,14 @@ class Life extends React.Component<any, any> {
             field: field.map((row) => row.map((cell) => false))
         })
     };
+    save = (proxy, config = 'config', evt, field = this.state.field) => {
+        console.log(proxy, config, field);
+        localStorage.setItem(config, JSON.stringify(field));
+    };
+    load = (evt, config = 'config') => {
+        const field = localStorage.getItem(config);
+        this.setState({field: JSON.parse(field)});
+    };
     render() {
         const field = this.state.field;
         const running = this.state.running;
@@ -146,6 +153,8 @@ class Life extends React.Component<any, any> {
                 <input step={100} value={this.state.speed} onChange={this.updateSpeed} type="number"/>
                 <button onClick={this.clear}>Clear</button>
                 <button onClick={this.reset}>Reset</button>
+                <button onClick={this.save}>Save</button>
+                <button onClick={this.load}>Load</button>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }

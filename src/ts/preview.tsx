@@ -1,15 +1,12 @@
 import * as React from 'react';
 
-interface PreviewP {
-    field;
-    width;
-    height;
-    modelPrev;
-    onClick: Function;
-}
-export class Preview extends React.Component<PreviewP, any> {
+export class Preview extends React.Component<any, any> {
     cellHeight: number;
     cellWidth: number;
+    refs: {
+        [key: string]: (Element);
+        field: (HTMLCanvasElement);
+    };
     constructor(props) {
         super(props);
         this.cellHeight = 25;
@@ -21,9 +18,6 @@ export class Preview extends React.Component<PreviewP, any> {
     drawField(ctx: CanvasRenderingContext2D) {
         const field = this.props.field;
         this.drawThisField(ctx, field);
-        if (this.props.modelPrev) {
-            this.drawThisField(ctx, this.props.modelPrev, true);
-        }
     }
     // для отрисовки превью еще не установленной на доску модели
     drawThisField(ctx: CanvasRenderingContext2D, field, renderModel?) {
