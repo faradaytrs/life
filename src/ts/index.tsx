@@ -144,14 +144,14 @@ class Life extends React.Component<any, any> {
         const height = this.props.height;
         const field = this.state.field;
         if (this.state.autoSave) {
-            this.save(null, 'config', null);
+            this.save();
         }
         this.setState({
             field: field.map((row) => row.map((cell) => false))
         });
     };
-    save = (proxy, config = 'config', evt, field = this.state.field) => {
-        localStorage.setItem(config, JSON.stringify(field));
+    save = () => {
+        localStorage.setItem('config', JSON.stringify(this.state.field));
     };
     load = (evt, config = 'config') => {
         const field = localStorage.getItem(config);
@@ -176,4 +176,5 @@ class Life extends React.Component<any, any> {
             </div>
     }
 }
+
 ReactDOM.render(<Life width={Math.floor(innerWidth/25)} height={Math.floor(innerHeight/25-2)} />, document.querySelector("#root"));
