@@ -125,7 +125,9 @@ class Life extends React.Component<any, any> {
         const speed = evt.target.value;
         this.setState({
             speed: speed
-        })
+        });
+        this.removeRunner();
+        this.setRunner(speed);
     };
     reset = () => {
         const width = this.props.width;

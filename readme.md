@@ -1,0 +1,1 @@
+#Project for my bachelor degree dissertation.
