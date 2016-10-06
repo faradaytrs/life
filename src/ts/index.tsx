@@ -21,11 +21,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                if (!empty) {
-                    field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
-                } else {
-                    field[i][j] = false;
-                }
+                field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
             }
         }
         return field;
@@ -73,6 +69,9 @@ class Life extends React.Component<any, any> {
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const rules = (cell, x, y) => {
             const neighbours = this.getNeighbours(x, y);
+            // if (cell) {
+            //     console.log(cell, x, y, neighbours.length, neighbours);
+            // }
 
             if (cell && neighbours.length >= 4) {
                 return false;
@@ -95,7 +94,7 @@ class Life extends React.Component<any, any> {
     componentDidUpdate = () => {
         const speed = this.state.speed;
         if (this.state.running === true) {
-            setTimeout(this.step, speed)
+            setTimeout(this.step, speed);
         }
     };
     getNeighbours(i, j) {
@@ -146,8 +145,8 @@ class Life extends React.Component<any, any> {
                 <input step={100} value={this.state.speed} onChange={this.updateSpeed} type="number"/>
                 <button onClick={this.clear}>Clear</button>
                 <button onClick={this.reset}>Reset</button>
-                <Preview width={width} height={height} field={field} onClick={this.onClick}/>;
+                <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }
 }
-ReactDOM.render(<Life width={50} height={30} />, document.querySelector("#root"));
+ReactDOM.render(<Life width={50} height={50} />, document.querySelector("#root"));

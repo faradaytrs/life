@@ -8,9 +8,9 @@ export class Cell {
             this.color = Math.random()*0xFFFFFF<<0;
         } else {
             //Rework!!
-            this.color = parents.reduce((sum, cell) => {
+            this.color = Math.floor(parents.reduce((sum, cell) => {
                 return sum + cell.color;
-            }, 0) / parents.length;
+            }, 0) / parents.length);
         }
     }
 }
