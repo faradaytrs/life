@@ -32,7 +32,7 @@ export class Preview extends React.Component<any, any> {
 
         field.map((row, i) => {
             row.map((cell, j) => {
-                ctx.fillStyle = cell !== false ? '#' + cell.color.toString(16) : "white";
+                ctx.fillStyle = cell.being !== null ? '#' + cell.being.color.toString(16) : "white";
                 ctx.fillRect((yBegin + j) * this.cellWidth, (xBegin + i) * this.cellHeight, this.cellWidth, this.cellHeight);
             });
         });

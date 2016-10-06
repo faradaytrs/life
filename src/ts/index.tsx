@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
 import {Being} from './being';
+import {Cell} from "./cell";
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -29,7 +30,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = (Math.random() < 0.1) ? new Being(): false;
+                field[i][j] = new Cell((Math.random() < 0.1) ? new Being(): null);
             }
         }
         return field;
@@ -38,7 +39,7 @@ class Life extends React.Component<any, any> {
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
-        field[y][x] = (field[y][x] !== false) ? false : new Being();
+        field[y][x].being = (field[y][x].being !== null) ? null : new Being();
         this.setState({
             field: field
         });
@@ -51,41 +52,34 @@ class Life extends React.Component<any, any> {
         }
     };
     step = () => {
-
-
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
+        const field = this.state.field;
         const rules = (cell, x, y) => {
             const neighbours = this.getNeighbours(x, y);
-            // if (cell) {
-            //     console.log(cell, x, y, neighbours.length, neighbours);
-            // }
+            const being = cell.being;
 
-            if (cell && neighbours.length >= 4) {
-                return false;
+            if (being && neighbours.length >= 4) {
+                cell.being = null;
             }
-            if (cell && neighbours.length <= 1) {
-                return false;
+            if (being && neighbours.length <= 1) {
+                cell.being = null;
             }
-            if (cell === false && neighbours.length === 3) {
-                return new Being(neighbours);
+            if (being === null && neighbours.length === 3) {
+                cell.being = new Being(neighbours);
             }
             return cell;
         };
-        const field = this.state.field;
+
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
-                return rules(cell, rowIndex, columnIndex);
+                return rules(Object.assign({}, cell), rowIndex, columnIndex);
             });
         })});
     };
-    componentDidUpdate = () => {
-
-    };
-    getNeighbours(i, j) {
-        const field = this.state.field;
+    getNeighbours(i, j, field = this.state.field) {
         const rowLimit = field.length-1;
         const columnLimit = field[0].length-1;
         let neighbours = [];
@@ -93,7 +87,7 @@ class Life extends React.Component<any, any> {
         for(let x = Math.max(0, i-1); x <= Math.min(i+1, rowLimit); x++) {
             for(let y = Math.max(0, j-1); y <= Math.min(j+1, columnLimit); y++) {
                 if(x !== i || y !== j) {
-                    if (field[x][y]) {
+                    if (field[x][y].being !== null) {
                         neighbours.push(field[x][y]);
                     }
                 }
@@ -127,7 +121,10 @@ class Life extends React.Component<any, any> {
             this.save();
         }
         this.setState({
-            field: field.map((row) => row.map((cell) => false))
+            field: field.map((row) => row.map((cell) => {
+                cell.being = null;
+                return cell;
+            }))
         });
     };
     save = () => {

@@ -1,3 +1,4 @@
+import {Cell} from "./cell";
 /**
  * Created by andrey on 10/5/16.
  */
@@ -6,15 +7,16 @@ export class Being {
     constructor(parents = []) {
         this.color = this.mergeColor(parents);
     }
-    mergeColor(parents) {
+    mergeColor(parents: Cell[]) {
         if (parents.length === 0) {
             return this.randColor(16) + this.randColor(8) + this.randColor()
         } else {
             const sum = parents.reduce((sum, cell) => {
+                const being = cell.being;
                 return {
-                    r: sum.r + ((cell.color >> 16) & 0xFF),
-                    g: sum.g + ((cell.color >> 8) & 0xFF),
-                    b: sum.b + (cell.color & 0xFF)
+                    r: sum.r + ((being.color >> 16) & 0xFF),
+                    g: sum.g + ((being.color >> 8) & 0xFF),
+                    b: sum.b + (being.color & 0xFF)
                 }
             }, {r: 0, g: 0, b: 0});
             const avg = {
