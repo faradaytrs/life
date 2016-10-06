@@ -1,11 +1,14 @@
 /**
  * Created by andrey on 10/5/16.
  */
-export class Cell {
+export class Being {
     color: number;
     constructor(parents = []) {
+        this.color = this.mergeColor(parents);
+    }
+    mergeColor(parents) {
         if (parents.length === 0) {
-            this.color = this.randColor(16) + this.randColor(8) + this.randColor()
+            return this.randColor(16) + this.randColor(8) + this.randColor()
         } else {
             const sum = parents.reduce((sum, cell) => {
                 return {
@@ -14,14 +17,12 @@ export class Cell {
                     b: sum.b + (cell.color & 0xFF)
                 }
             }, {r: 0, g: 0, b: 0});
-            console.log(sum);
             const avg = {
                 r: Math.floor(sum.r/parents.length),
                 g: Math.floor(sum.g/parents.length),
                 b: Math.floor(sum.b/parents.length)
             };
-            this.color = (avg.r << 16) + (avg.g << 8) + avg.b;
-            //console.log(this.color);
+            return (avg.r << 16) + (avg.g << 8) + avg.b;
         }
     }
     randColor(shift = 0) {

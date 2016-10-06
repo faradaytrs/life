@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
-import {Cell} from './cell';
+import {Being} from './being';
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -11,7 +11,7 @@ class Life extends React.Component<any, any> {
         this.state = {
             field: this.initField(width, height),
             speed: 100,
-            autoSave: true,
+            autoSave: false,
             interval: false
         };
     }
@@ -29,7 +29,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = (Math.random() < 0.1) ? new Cell(): false;
+                field[i][j] = (Math.random() < 0.1) ? new Being(): false;
             }
         }
         return field;
@@ -38,7 +38,7 @@ class Life extends React.Component<any, any> {
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
-        field[y][x] = (field[y][x] !== false) ? false : new Cell();
+        field[y][x] = (field[y][x] !== false) ? false : new Being();
         this.setState({
             field: field
         });
@@ -50,28 +50,8 @@ class Life extends React.Component<any, any> {
             this.removeRunner();
         }
     };
-    pauseGame = () => {
-        this.setState({running: false});
-    };
-    setModel = (model) => {
-        this.setState({
-            modelPrev: model
-        })
-    };
     step = () => {
-        // в пустой (мёртвой) клетке, рядом с которой ровно три живые клетки, зарождается жизнь;
-        // если у живой клетки есть две или три живые соседки, то эта клетка продолжает жить;
-        // в противном случае (если соседей меньше двух или больше трёх) клетка умирает («от одиночества» или «от перенаселённости»)
-        const rulesFix = (cell, x, y) => {
-            const neighbours = this.getNeighbours(x, y);
-            if (cell && (neighbours.length == 2 || neighbours.length == 3)) {
-                return cell;
-            }
-            if (cell == false && neighbours.length === 3) {
-                return new Cell(neighbours);
-            }
-            return false;
-        };
+
 
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
@@ -90,7 +70,7 @@ class Life extends React.Component<any, any> {
                 return false;
             }
             if (cell === false && neighbours.length === 3) {
-                return new Cell(neighbours);
+                return new Being(neighbours);
             }
             return cell;
         };
@@ -133,7 +113,7 @@ class Life extends React.Component<any, any> {
         const width = this.props.width;
         const height = this.props.height;
         if (this.state.autoSave) {
-            this.save(null, 'config', null);
+            this.save();
         }
         this.setState({
             field: this.initField(width, height)
@@ -157,6 +137,12 @@ class Life extends React.Component<any, any> {
         const field = localStorage.getItem(config);
         this.setState({field: JSON.parse(field)});
     };
+    autoSaveHandler = (evt) => {
+        const value = evt.target.checked;
+        this.setState({
+            autoSave: value
+        });
+    };
     render() {
         const field = this.state.field;
         const running = this.state.interval !== false;
@@ -171,7 +157,7 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.reset}>Reset</button>
                 <button onClick={this.save}>Save</button>
                 <button onClick={this.load}>Load</button>
-                <input checked={autoSave} type="checkbox"/>
+                <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }
