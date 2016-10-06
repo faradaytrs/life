@@ -16,7 +16,7 @@ class Life extends React.Component<any, any> {
             speed: 100
         };
     }
-    initField(width, height, empty?) {
+    initField(width, height) {
         let field = [];
         for (let i=0; i<height; i++) {
             field[i] = [];
@@ -130,8 +130,9 @@ class Life extends React.Component<any, any> {
     clear = () => {
         const width = this.props.width;
         const height = this.props.height;
+        const field = this.state.field;
         this.setState({
-            field: this.initField(width, height, true)
+            field: field.map((row) => row.map((cell) => false))
         })
     };
     render() {
