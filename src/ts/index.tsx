@@ -15,12 +15,12 @@ class Life extends React.Component<any, any> {
             speed: 100,
             autoSave: false,
             interval: false,
-            rules: Rules.classic
+            rules: 'classic'
         };
         this.state.field = this.initField(width, height);
     }
     setRunner = (speed = this.state.speed) => {
-        const rules = this.state.rules;
+        const rules = Rules[this.state.rules];
         this.setState({
             interval: setInterval(this.step.bind(this, rules), speed)
         });
@@ -55,7 +55,7 @@ class Life extends React.Component<any, any> {
             this.removeRunner();
         }
     };
-    step = (rules = Rules.classic) => {
+    step = (rules = Rules[this.state.rules]) => {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
@@ -135,7 +135,7 @@ class Life extends React.Component<any, any> {
 
     rulesHandler = (evt) => {
         const value = evt.target.value;
-        this.setState({rules: Rules[value]});
+        this.setState({rules: value});
     };
 
     render() {
