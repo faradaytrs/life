@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
 import {Being} from './being';
 import {Cell} from "./cell";
+import {Rules} from "./rules";
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -57,20 +58,7 @@ class Life extends React.Component<any, any> {
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
-        const rules = (cell, neighbours) => {
-            const being = cell.being;
-
-            if (being && neighbours.length >= 4) {
-                cell.being = null;
-            }
-            if (being && neighbours.length <= 1) {
-                cell.being = null;
-            }
-            if (being === null && neighbours.length === 3) {
-                cell.being = new Being(neighbours);
-            }
-            return cell;
-        };
+        const rules = Rules.classic;
 
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
