@@ -11,11 +11,12 @@ class Life extends React.Component<any, any> {
         const width = this.props.width;
         const height = this.props.height;
         this.state = {
-            field: this.initField(width, height),
+            density: 0.3,
             speed: 100,
             autoSave: false,
             interval: false
         };
+        this.state.field = this.initField(width, height);
     }
     setRunner = (speed = this.state.speed) => {
         this.setState({
@@ -26,16 +27,16 @@ class Life extends React.Component<any, any> {
         clearInterval(this.state.interval);
         this.setState({interval: false});
     }
-    initField(width, height) {
+    initField = (width, height) => {
         let field = [];
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = new Cell((Math.random() < 0.1) ? new Being(): null);
+                field[i][j] = new Cell((Math.random() < this.state.density) ? new Being(): null);
             }
         }
         return field;
-    }
+    };
     onClick = (pos) => {
         const y = pos.y;
         const x = pos.x;
@@ -47,7 +48,7 @@ class Life extends React.Component<any, any> {
     };
     runGame = (evt) => {
         if (this.state.interval === false) {
-            this.setRunner()
+            this.setRunner();
         } else {
             this.removeRunner();
         }
@@ -127,18 +128,26 @@ class Life extends React.Component<any, any> {
             autoSave: value
         });
     };
+
+    densityHandler = (evt) => {
+        const value = evt.target.value;
+        this.setState({density: value});
+    };
+
     render() {
         const field = this.state.field;
         const running = this.state.interval !== false;
         const width = this.props.width;
         const height = this.props.height;
         const autoSave = this.state.autoSave;
+        const density = this.state.density;
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
-                <input step={100} value={this.state.speed} onChange={this.updateSpeed} type="number"/>
+                <input step={100} value={this.state.speed} onChange={this.updateSpeed} placeholder="Speed" type="number"/>
                 <button onClick={this.clear}>Clear</button>
                 <button onClick={this.reset}>Reset</button>
+                <input min={0} max={1} step={0.01} value={density} onChange={this.densityHandler} placeholder="Density" type="number"/>
                 <button onClick={this.save}>Save</button>
                 <button onClick={this.load}>Load</button>
                 <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
