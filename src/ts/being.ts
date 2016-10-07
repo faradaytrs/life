@@ -2,10 +2,16 @@ import {Cell} from "./cell";
 /**
  * Created by andrey on 10/5/16.
  */
+enum Gender {
+    MALE, FEMALE
+}
 export class Being {
     color: number;
+    age: number;
+    gender: Gender;
     constructor(parents = []) {
         this.color = this.mergeColor(parents);
+        this.age = 0;
     }
     mergeColor(parents: Cell[]) {
         if (parents.length === 0) {

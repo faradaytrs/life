@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
 import {Being} from './being';
 import {Cell} from "./cell";
-import {Rules} from "./rules";
+import {rules as Rules} from "./rules";
 
 class Life extends React.Component<any, any> {
     constructor(props) {
@@ -14,13 +14,15 @@ class Life extends React.Component<any, any> {
             density: 0.3,
             speed: 100,
             autoSave: false,
-            interval: false
+            interval: false,
+            rules: Rules.classic
         };
         this.state.field = this.initField(width, height);
     }
     setRunner = (speed = this.state.speed) => {
+        const rules = this.state.rules;
         this.setState({
-            interval: setInterval(this.step, speed)
+            interval: setInterval(this.step.bind(this, rules), speed)
         });
     };
     removeRunner() {
@@ -53,13 +55,12 @@ class Life extends React.Component<any, any> {
             this.removeRunner();
         }
     };
-    step = () => {
+    step = (rules = Rules.classic) => {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
-        const rules = Rules.classic;
 
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
@@ -132,6 +133,13 @@ class Life extends React.Component<any, any> {
         this.setState({density: value});
     };
 
+    rulesHandler = (evt) => {
+        const value = evt.target.value;
+
+        console.log(value);
+        this.setState({rules: Rules[value]});
+    };
+
     render() {
         const field = this.state.field;
         const running = this.state.interval !== false;
@@ -139,6 +147,7 @@ class Life extends React.Component<any, any> {
         const height = this.props.height;
         const autoSave = this.state.autoSave;
         const density = this.state.density;
+        const rules = this.state.rules;
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
@@ -149,6 +158,9 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.save}>Save</button>
                 <button onClick={this.load}>Load</button>
                 <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
+                <select value={rules} onChange={this.rulesHandler} name="rules" id="rules">
+                    {Object.keys(Rules).map((rule) => <option value={rule}>{rule}</option>)}
+                </select>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }

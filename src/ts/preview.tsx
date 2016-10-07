@@ -32,8 +32,21 @@ export class Preview extends React.Component<any, any> {
 
         field.map((row, i) => {
             row.map((cell, j) => {
-                ctx.fillStyle = cell.being !== null ? '#' + cell.being.color.toString(16) : "white";
-                ctx.fillRect((yBegin + j) * this.cellWidth, (xBegin + i) * this.cellHeight, this.cellWidth, this.cellHeight);
+
+                const radius = this.cellHeight/2;
+                const x = (yBegin + j) * this.cellWidth;
+                const y = (xBegin + i) * this.cellHeight;
+                const color = cell.being !== null ? `#${cell.being.color.toString(16)}` : "white";
+
+                ctx.fillStyle = color;
+                //ctx.arc((yBegin + j) * this.cellWidth, (xBegin + i) * this.cellHeight, 70, 50, 2 * Math.PI, false);
+                ctx.fillRect(x, y, this.cellWidth, this.cellHeight);
+                //aging
+                if (cell.being !== null) {
+                    const age = Math.floor(this.cellHeight*cell.being.age/20);
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(x+(this.cellWidth/2-age/2), y+(this.cellWidth/2-age/2), age, age);
+                }
             });
         });
     }
