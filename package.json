@@ -9,14 +9,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/react": "^0.14.37",
+    "@types/react": "^0.14.39",
     "@types/react-dom": "^0.14.17",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-less": "^3.1.0",
     "gulp-livereload": "^3.8.1",
     "gulp-sourcemaps": "^1.6.0",
-    "gulp-typescript": "^3.0.1",
+    "gulp-typescript": "^3.0.2",
     "stream-combiner": "^0.2.2",
     "typescript": "^2.0.3"
   },
