@@ -102,8 +102,6 @@ class Life extends React.Component<any, any> {
         });
     };
     clear = () => {
-        const width = this.props.width;
-        const height = this.props.height;
         const field = this.state.field;
         if (this.state.autoSave) {
             this.save();
