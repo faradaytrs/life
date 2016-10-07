@@ -135,8 +135,6 @@ class Life extends React.Component<any, any> {
 
     rulesHandler = (evt) => {
         const value = evt.target.value;
-
-        console.log(value);
         this.setState({rules: Rules[value]});
     };
 
@@ -159,7 +157,7 @@ class Life extends React.Component<any, any> {
                 <button onClick={this.load}>Load</button>
                 <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
                 <select value={rules} onChange={this.rulesHandler} name="rules" id="rules">
-                    {Object.keys(Rules).map((rule) => <option value={rule}>{rule}</option>)}
+                    {Object.keys(Rules).map((rule) => <option key={rule} value={rule}>{rule}</option>)}
                 </select>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
