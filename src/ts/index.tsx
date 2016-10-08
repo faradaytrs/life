@@ -5,6 +5,10 @@ import {Being} from './being';
 import {Cell} from "./cell";
 import {rules as Rules} from "./rules";
 
+enum FieldType {
+    INFINITE, FINITE
+}
+
 class Life extends React.Component<any, any> {
     constructor(props) {
         super(props);
@@ -15,7 +19,8 @@ class Life extends React.Component<any, any> {
             speed: 100,
             autoSave: false,
             interval: false,
-            rules: 'classic'
+            rules: 'classic',
+            fieldType: FieldType.INFINITE
         };
         this.state.field = this.initField(width, height);
     }
@@ -61,27 +66,71 @@ class Life extends React.Component<any, any> {
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
+        const fieldType = this.state.fieldType;
 
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
-                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex));
+                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex, field, fieldType));
             });
         })});
     };
-    getNeighbours(i, j, field = this.state.field) {
+    getNeighbours(i, j, field = this.state.field, type=FieldType.INFINITE) {
         const rowLimit = field.length-1;
         const columnLimit = field[0].length-1;
-        let neighbours = [];
 
-        for(let x = Math.max(0, i-1); x <= Math.min(i+1, rowLimit); x++) {
-            for(let y = Math.max(0, j-1); y <= Math.min(j+1, columnLimit); y++) {
-                if(x !== i || y !== j) {
-                    if (field[x][y].being !== null) {
-                        neighbours.push(field[x][y]);
-                    }
+        // array[i-1][j-1]
+        // array[i-1][j]
+        // array[i-1][j+1]
+        //
+        // array[i][j-1]
+        // array[i][j+1]
+        //
+        // array[i+1][j-1]
+        // array[i+1][j]
+        // array[i+1][j+1]
+
+        const candidates = [
+            [i-1, j-1], [i-1, j], [i-1, j+1],
+            [i, j-1], [i, j+1],
+            [i+1, j-1], [i+1, j], [i+1, j+1]
+        ];
+
+        const neighbours = candidates.reduce((neighbours, candidate) => {
+            if (candidate[0] < 0) {
+                if (type===FieldType.INFINITE) {
+                    candidate[0] = rowLimit;
+                } else {
+                    return neighbours;
                 }
             }
-        }
+            if (candidate[1] < 0) {
+                if (type===FieldType.INFINITE) {
+                    candidate[1] = columnLimit;
+                } else {
+                    return neighbours;
+                }
+            }
+            if (candidate[0] > rowLimit) {
+                if (type === FieldType.INFINITE) {
+                    candidate[0] = 0;
+                } else {
+                    return neighbours;
+                }
+            }
+            if (candidate[1] > columnLimit) {
+                if (type === FieldType.INFINITE) {
+                    candidate[1] = 0;
+                } else {
+                    return neighbours;
+                }
+            }
+            const cell = field[candidate[0]][candidate[1]];
+            if (cell.being !== null) {
+                neighbours.push(cell);
+            }
+            return neighbours;
+        }, []);
+
         return neighbours;
     }
     updateSpeed = (evt) => {
@@ -141,6 +190,10 @@ class Life extends React.Component<any, any> {
             setTimeout(this.setRunner);
         }
     };
+    fieldTypeHandler = (evt) => {
+        const type = evt.target.selected;
+        this.setState({fieldType: type});
+    };
 
     render() {
         const field = this.state.field;
@@ -150,6 +203,10 @@ class Life extends React.Component<any, any> {
         const autoSave = this.state.autoSave;
         const density = this.state.density;
         const rules = this.state.rules;
+        const fieldTypes = {
+            'infinite': FieldType.INFINITE,
+            'finite': FieldType.FINITE
+        };
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
@@ -162,6 +219,9 @@ class Life extends React.Component<any, any> {
                 <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
                 <select value={rules} onChange={this.rulesHandler} name="rules" id="rules">
                     {Object.keys(Rules).map((rule) => <option key={rule} value={rule}>{rule}</option>)}
+                </select>
+                <select value={this.state.fieldType} onChange={this.fieldTypeHandler} name="fieldType" id="field-type">
+                    {Object.keys(fieldTypes).map((type) => <option key={type} value={fieldTypes[type]}>{type}</option>)}
                 </select>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
