@@ -136,6 +136,10 @@ class Life extends React.Component<any, any> {
     rulesHandler = (evt) => {
         const value = evt.target.value;
         this.setState({rules: value});
+        if (this.state.interval !== false) {
+            this.removeRunner();
+            setTimeout(this.setRunner);
+        }
     };
 
     render() {
