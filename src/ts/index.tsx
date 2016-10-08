@@ -60,34 +60,25 @@ class Life extends React.Component<any, any> {
             this.removeRunner();
         }
     };
-    step = (rules = Rules[this.state.rules]) => {
+    step = () => {
         // 1. Если фишка имеет четырех или более соседей, то она умирает от перенаселенности (с этой клетки снимается фишка).
         // 2. Если фишка не имеет соседей или имеет ровно одного соседа, то она умирает от нехватки общения.
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
-        const fieldType = this.state.fieldType;
+        const rules = Rules[this.state.rules];
 
         this.setState({field: field.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
-                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex, field, fieldType));
+                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex));
             });
         })});
     };
-    getNeighbours(i, j, field = this.state.field, type=FieldType.INFINITE) {
+    getNeighbours(i, j) {
+        const field = this.state.field;
         const rowLimit = field.length-1;
         const columnLimit = field[0].length-1;
-
-        // array[i-1][j-1]
-        // array[i-1][j]
-        // array[i-1][j+1]
-        //
-        // array[i][j-1]
-        // array[i][j+1]
-        //
-        // array[i+1][j-1]
-        // array[i+1][j]
-        // array[i+1][j+1]
+        const type = this.state.fieldType;
 
         const candidates = [
             [i-1, j-1], [i-1, j], [i-1, j+1],
@@ -95,43 +86,29 @@ class Life extends React.Component<any, any> {
             [i+1, j-1], [i+1, j], [i+1, j+1]
         ];
 
-        const neighbours = candidates.reduce((neighbours, candidate) => {
-            if (candidate[0] < 0) {
-                if (type===FieldType.INFINITE) {
-                    candidate[0] = rowLimit;
-                } else {
-                    return neighbours;
+        return candidates.reduce((neighbours, candidate) => {
+            let x = candidate[0];
+            let y = candidate[1];
+            if (!(type !== FieldType.INFINITE && (x < 0 || y < 0 || x > rowLimit || y > columnLimit))) {
+                if (x < 0) {
+                    x = rowLimit;
                 }
-            }
-            if (candidate[1] < 0) {
-                if (type===FieldType.INFINITE) {
-                    candidate[1] = columnLimit;
-                } else {
-                    return neighbours;
+                if (y < 0) {
+                    y = columnLimit;
                 }
-            }
-            if (candidate[0] > rowLimit) {
-                if (type === FieldType.INFINITE) {
-                    candidate[0] = 0;
-                } else {
-                    return neighbours;
+                if (x > rowLimit) {
+                    x = 0;
                 }
-            }
-            if (candidate[1] > columnLimit) {
-                if (type === FieldType.INFINITE) {
-                    candidate[1] = 0;
-                } else {
-                    return neighbours;
+                if (y > columnLimit) {
+                    y = 0;
                 }
-            }
-            const cell = field[candidate[0]][candidate[1]];
-            if (cell.being !== null) {
-                neighbours.push(cell);
+                const cell = field[x][y];
+                if (cell.being !== null) {
+                    neighbours.push(cell);
+                }
             }
             return neighbours;
         }, []);
-
-        return neighbours;
     }
     updateSpeed = (evt) => {
         const speed = evt.target.value;
@@ -191,7 +168,7 @@ class Life extends React.Component<any, any> {
         }
     };
     fieldTypeHandler = (evt) => {
-        const type = evt.target.selected;
+        const type = +evt.target.value;
         this.setState({fieldType: type});
     };
 
