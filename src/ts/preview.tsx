@@ -3,10 +3,7 @@ import * as React from 'react';
 export class Preview extends React.Component<any, any> {
     cellHeight: number;
     cellWidth: number;
-    refs: {
-        [key: string]: (Element);
-        field: (HTMLCanvasElement);
-    };
+    canvas: HTMLCanvasElement;
     constructor(props) {
         super(props);
         this.cellHeight = 25;
@@ -51,11 +48,11 @@ export class Preview extends React.Component<any, any> {
         });
     }
     componentDidUpdate() {
-        const ctx = this.refs.field.getContext('2d');
+        const ctx = this.canvas.getContext('2d');
         this.drawField(ctx);
     }
     componentDidMount() {
-        var field = this.refs.field;
+        var field = this.canvas;
         const ctx = field.getContext('2d');
         this.addClickHandle(field);
         this.drawField(ctx);
@@ -99,7 +96,7 @@ export class Preview extends React.Component<any, any> {
         const height = this.props.height*this.cellHeight;
         const pos = this.state.cursorPos || {};
         return <div>
-            <canvas width={width} height={height} ref="field">1</canvas>
+            <canvas width={width} height={height} ref={(canvas => this.canvas = canvas)}>1</canvas>
             <span>{pos.y + 'x' + pos.x}</span>
         </div>
     }
