@@ -39,7 +39,7 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = new Cell((Math.random() < this.state.density) ? new Being(): null);
+                field[i][j] = new Cell((Math.random() < this.state.density) ? new Being() : null);
             }
         }
         return field;
@@ -48,7 +48,7 @@ class Life extends React.Component<any, any> {
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
-        field[y][x].being = (field[y][x].being !== null) ? null : new Being();
+        field[y][x].being = (field[y][x].being != null) ? null : new Being();
         this.setState({
             field: field
         });
