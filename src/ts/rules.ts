@@ -1,6 +1,6 @@
 import {Being} from "./being";
 
-export const rules =  {
+export const rules = {
     classic: (cell, neighbours) => {
         const being = cell.being;
         if (being && neighbours.length >= 4) {

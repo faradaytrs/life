@@ -2,13 +2,14 @@ import {Cell} from "./cell";
 /**
  * Created by andrey on 10/5/16.
  */
-enum Gender {
-    MALE, FEMALE
-}
+// we will rename Being to Car
 export class Being {
-    color: number;
+    color: number; // here will be a car color
+    speed: number; // maximum speed that this car can drive
+
+    //old properties to delete
     age: number;
-    gender: Gender;
+
     constructor(parents = []) {
         this.color = this.mergeColor(parents);
         this.age = 0;
