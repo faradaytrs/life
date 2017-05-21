@@ -40,11 +40,9 @@ export class Preview extends React.Component<any, any> {
 
                 //draw direction triangle
                 if (cell.type === Type.ROAD) {
-                    console.log(cell.direction);
                     ctx.fillStyle = 'white';
                     ctx.beginPath();
                     if (direction === Direction.RIGHT) {
-                        console.log('right', Direction.RIGHT);
                         ctx.moveTo(x, y);
                         ctx.lineTo(x + this.cellWidth/3, y + this.cellHeight/2);
                         ctx.lineTo(x, y + this.cellHeight);
@@ -80,7 +78,7 @@ export class Preview extends React.Component<any, any> {
             x: Math.floor(evt.nativeEvent.offsetX/this.cellWidth),
             y: Math.floor(evt.nativeEvent.offsetY/this.cellHeight)
         };
-        this.props.onClick(pos);
+        this.props.onClick(pos, evt.nativeEvent.which);
     };
     render() {
         const width = this.props.width*this.cellWidth;

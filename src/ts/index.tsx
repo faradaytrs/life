@@ -42,8 +42,7 @@ class Life extends React.Component<any, any> {
         }
         return field;
     };
-    onClick = (pos) => {
-        console.log(pos);
+    onClick = (pos, button) => {
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
