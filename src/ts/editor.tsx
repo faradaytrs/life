@@ -7,7 +7,7 @@ export class Editor extends React.Component<any, any> {
         this.state = {
             direction: Direction.RIGHT,
             speed: 100,
-            density: 0.3
+            density: 0.3,
         }
     }
     updateSpeed = (evt) => {
