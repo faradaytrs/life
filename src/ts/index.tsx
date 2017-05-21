@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Preview} from './preview';
-import {Being} from './being';
-import {Cell} from "./cell";
+import {Car} from './car';
+import {Cell, Direction, Type} from "./cell";
 import {rules as Rules} from "./rules";
 
 enum FieldType {
@@ -17,10 +17,8 @@ class Life extends React.Component<any, any> {
         this.state = {
             density: 0.3,
             speed: 100,
-            autoSave: false,
             interval: false,
-            rules: 'classic',
-            fieldType: FieldType.INFINITE
+            direction: Direction.RIGHT
         };
         this.state.field = this.initField(width, height);
     }
@@ -39,16 +37,20 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = new Cell((Math.random() < this.state.density) ? new Being() : null);
+                field[i][j] = new Cell((Math.random() < this.state.density) ? new Car() : null);
             }
         }
         return field;
     };
     onClick = (pos) => {
+        console.log(pos);
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
-        field[y][x].being = (field[y][x].being != null) ? null : new Being();
+        //field[y][x].car = (field[y][x].car != null) ? null : new Car();
+        const type = field[y][x].type;
+        field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
+        field[y][x].direction = this.state.direction;
         this.setState({
             field: field
         });
@@ -121,55 +123,18 @@ class Life extends React.Component<any, any> {
     reset = () => {
         const width = this.props.width;
         const height = this.props.height;
-        if (this.state.autoSave) {
-            this.save();
-        }
         this.setState({
             field: this.initField(width, height)
         });
     };
-    clear = () => {
-        const field = this.state.field;
-        if (this.state.autoSave) {
-            this.save();
-        }
-        this.setState({
-            field: field.map((row) => row.map((cell) => {
-                cell.being = null;
-                return cell;
-            }))
-        });
-    };
-    save = () => {
-        localStorage.setItem('config', JSON.stringify(this.state.field));
-    };
-    load = (evt, config = 'config') => {
-        const field = localStorage.getItem(config);
-        this.setState({field: JSON.parse(field)});
-    };
-    autoSaveHandler = (evt) => {
-        const value = evt.target.checked;
-        this.setState({
-            autoSave: value
-        });
-    };
-
     densityHandler = (evt) => {
         const value = evt.target.value;
         this.setState({density: value});
     };
 
-    rulesHandler = (evt) => {
-        const value = evt.target.value;
-        this.setState({rules: value});
-        if (this.state.interval !== false) {
-            this.removeRunner();
-            setTimeout(this.setRunner);
-        }
-    };
-    fieldTypeHandler = (evt) => {
-        const type = +evt.target.value;
-        this.setState({fieldType: type});
+    onChangeDirection = (evt) => {
+        console.log('newdir', evt.target.value);
+        this.setState({direction: +evt.target.value});
     };
 
     render() {
@@ -177,28 +142,19 @@ class Life extends React.Component<any, any> {
         const running = this.state.interval !== false;
         const width = this.props.width;
         const height = this.props.height;
-        const autoSave = this.state.autoSave;
-        const density = this.state.density;
-        const rules = this.state.rules;
-        const fieldTypes = {
-            'infinite': FieldType.INFINITE,
-            'finite': FieldType.FINITE
+        const directions = {
+            'right': Direction.RIGHT,
+            'down': Direction.DOWN,
+            'left': Direction.LEFT,
+            'up': Direction.UP
         };
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
                 <input step={100} value={this.state.speed} onChange={this.updateSpeed} placeholder="Speed" type="number"/>
-                <button onClick={this.clear}>Clear</button>
                 <button onClick={this.reset}>Reset</button>
-                <input min={0} max={1} step={0.01} value={density} onChange={this.densityHandler} placeholder="Density" type="number"/>
-                <button onClick={this.save}>Save</button>
-                <button onClick={this.load}>Load</button>
-                <input checked={autoSave} onChange={this.autoSaveHandler} type="checkbox"/>
-                <select value={rules} onChange={this.rulesHandler} name="rules" id="rules">
-                    {Object.keys(Rules).map((rule) => <option key={rule} value={rule}>{rule}</option>)}
-                </select>
-                <select value={this.state.fieldType} onChange={this.fieldTypeHandler} name="fieldType" id="field-type">
-                    {Object.keys(fieldTypes).map((type) => <option key={type} value={fieldTypes[type]}>{type}</option>)}
+                <select value={this.state.direction} onChange={this.onChangeDirection} name="direction" id="direction">
+                    {Object.keys(directions).map(name => <option key={directions[name]} value={directions[name]}>{name}</option>)}
                 </select>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>

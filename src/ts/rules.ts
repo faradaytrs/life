@@ -1,35 +1,35 @@
-import {Being} from "./being";
+import {Car} from "./car";
 
 export const rules = {
     classic: (cell, neighbours) => {
-        const being = cell.being;
+        const being = cell.car;
         if (being && neighbours.length >= 4) {
-            cell.being = null;
+            cell.car = null;
         }
         if (being && neighbours.length <= 1) {
-            cell.being = null;
+            cell.car = null;
         }
         if (being === null && neighbours.length === 3) {
-            cell.being = new Being(neighbours);
+            cell.car = new Car(neighbours);
         }
         return cell;
     },
     aging: (cell, neighbours) => {
-        const being = cell.being;
+        const being = cell.car;
         if (being !== null) {
-            cell.being.age = cell.being.age+1;
+            cell.car.age = cell.car.age+1;
         }
         if (being && being.age > 20) {
-            cell.being = null;
+            cell.car = null;
         }
         if (being && neighbours.length >= 4) {
-            cell.being = null;
+            cell.car = null;
         }
         if (being && neighbours.length <= 1) {
-            cell.being = null;
+            cell.car = null;
         }
         if (being === null && neighbours.length === 3) {
-            cell.being = new Being(neighbours);
+            cell.car = new Car(neighbours);
         }
         return cell;
     }

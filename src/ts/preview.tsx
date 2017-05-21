@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Direction, Type} from "./cell";
 
 export class Preview extends React.Component<any, any> {
     cellHeight: number;
@@ -8,9 +9,6 @@ export class Preview extends React.Component<any, any> {
         super(props);
         this.cellHeight = 25;
         this.cellWidth = 25;
-        this.state = {
-            cursorPos: null
-        }
     }
     drawField(ctx: CanvasRenderingContext2D) {
         const field = this.props.field;
@@ -31,15 +29,39 @@ export class Preview extends React.Component<any, any> {
             row.map((cell, j) => {
                 const x = (yBegin + j) * this.cellWidth;
                 const y = (xBegin + i) * this.cellHeight;
-                const color = cell.being !== null ? `#${cell.being.color.toString(16)}` : "white";
+               // const color = cell.car !== null ? `#${cell.car.color.toString(16)}` : "white";
+                const color = (cell.type === Type.ROAD) ? 'black' : 'white';
+                const direction = cell.direction;
 
+                //draw cell
                 ctx.fillStyle = color;
+
                 ctx.fillRect(x, y, this.cellWidth, this.cellHeight);
-                //aging
-                if (cell.being !== null) {
-                    const age = Math.floor(this.cellHeight*cell.being.age/20);
+
+                //draw direction triangle
+                if (cell.type === Type.ROAD) {
+                    console.log(cell.direction);
                     ctx.fillStyle = 'white';
-                    ctx.fillRect(x+(this.cellWidth/2-age/2), y+(this.cellWidth/2-age/2), age, age);
+                    ctx.beginPath();
+                    if (direction === Direction.RIGHT) {
+                        console.log('right', Direction.RIGHT);
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + this.cellWidth/3, y + this.cellHeight/2);
+                        ctx.lineTo(x, y + this.cellHeight);
+                    } else if (direction === Direction.DOWN) {
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + this.cellWidth/2, y+ this.cellHeight/3);
+                        ctx.lineTo(x + this.cellWidth, y);
+                    } else if (direction === Direction.LEFT) {
+                        ctx.moveTo(x + this.cellWidth, y);
+                        ctx.lineTo(x + this.cellWidth/3*2, y + this.cellHeight/2);
+                        ctx.lineTo(x + this.cellWidth, y+ this.cellHeight);
+                    } else if (direction === Direction.UP) {
+                        ctx.moveTo(x, y + this.cellHeight);
+                        ctx.lineTo(x + this.cellWidth/2, y + this.cellHeight/3*2);
+                        ctx.lineTo(x + this.cellWidth, y+ this.cellHeight);
+                    }
+                    ctx.fill();
                 }
             });
         });
@@ -49,52 +71,22 @@ export class Preview extends React.Component<any, any> {
         this.drawField(ctx);
     }
     componentDidMount() {
-        var field = this.canvas;
+        const field = this.canvas;
         const ctx = field.getContext('2d');
-        this.addClickHandle(field);
         this.drawField(ctx);
     }
-    addClickHandle(field) {
-        let lastCell;
-        let isMouseDown = false;
-
-        let mouseMoveHandle = (e) => {
-            const x = Math.floor(e.layerX / this.cellWidth);
-            const y = Math.floor(e.layerY / this.cellHeight);
-            if (lastCell && lastCell.x == x && lastCell.y == y) {
-                return false;
-            }
-            const pos = {x, y};
-            this.setState({
-                cursorPos: pos
-            });
-            lastCell = pos;
-            return true;
+    handleClick = (evt) => {
+        const pos = {
+            x: Math.floor(evt.nativeEvent.offsetX/this.cellWidth),
+            y: Math.floor(evt.nativeEvent.offsetY/this.cellHeight)
         };
-
-        field.addEventListener('mousedown', (e) => {
-            isMouseDown = true;
-            mouseMoveHandle(e);
-            this.props.onClick(this.state.cursorPos);
-        });
-        field.addEventListener('mouseup', () => {
-            isMouseDown = false;
-            lastCell = null;
-        });
-        field.addEventListener('mousemove', (e) => {
-            let moved = mouseMoveHandle(e);
-            if (moved && isMouseDown) {
-                this.props.onClick(this.state.cursorPos);
-            }
-        });
-    }
+        this.props.onClick(pos);
+    };
     render() {
         const width = this.props.width*this.cellWidth;
         const height = this.props.height*this.cellHeight;
-        const pos = this.state.cursorPos || {};
         return <div>
-            <canvas width={width} height={height} ref={(canvas => this.canvas = canvas)}>1</canvas>
-            <span>{pos.y + 'x' + pos.x}</span>
+            <canvas onClick={this.handleClick} width={width} height={height} ref={(canvas => this.canvas = canvas)}>1</canvas>
         </div>
     }
 }
