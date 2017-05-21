@@ -4,6 +4,7 @@ import {Preview} from './preview';
 import {Car} from './car';
 import {Cell, Direction, Type} from "./cell";
 import {rules as Rules} from "./rules";
+import {Editor} from "./editor";
 
 enum FieldType {
     INFINITE, FINITE
@@ -15,14 +16,16 @@ class Life extends React.Component<any, any> {
         const width = this.props.width;
         const height = this.props.height;
         this.state = {
-            density: 0.3,
-            speed: 100,
             interval: false,
-            direction: Direction.RIGHT
+            settings: {
+                direction: Direction.RIGHT,
+                speed: 100,
+                density: 0.3
+            }
         };
         this.state.field = this.initField(width, height);
     }
-    setRunner = (speed = this.state.speed) => {
+    setRunner = (speed = this.state.settings.speed) => {
         const rules = Rules[this.state.rules];
         this.setState({
             interval: setInterval(this.step.bind(this, rules), speed)
@@ -37,7 +40,8 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = new Cell((Math.random() < this.state.density) ? new Car() : null);
+                field[i][j] = new Cell((Math.random() < this.state.settings.density) ? new Car() : null);
+                //field[i][j] = new Cell(null);
             }
         }
         return field;
@@ -49,7 +53,7 @@ class Life extends React.Component<any, any> {
         //field[y][x].car = (field[y][x].car != null) ? null : new Car();
         const type = field[y][x].type;
         field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
-        field[y][x].direction = this.state.direction;
+        field[y][x].direction = this.state.settings.direction;
         this.setState({
             field: field
         });
@@ -111,13 +115,11 @@ class Life extends React.Component<any, any> {
             return neighbours;
         }, []);
     }
-    updateSpeed = (evt) => {
-        const speed = evt.target.value;
-        this.setState({
-            speed: speed
-        });
-        this.removeRunner();
-        this.setRunner(speed);
+    componentDidUpdate = (evt) => {
+        if (this.state.interval !== false) {
+            this.removeRunner();
+            this.setRunner(this.state.settings.speed);
+        }
     };
     reset = () => {
         const width = this.props.width;
@@ -126,14 +128,10 @@ class Life extends React.Component<any, any> {
             field: this.initField(width, height)
         });
     };
-    densityHandler = (evt) => {
-        const value = evt.target.value;
-        this.setState({density: value});
-    };
 
-    onChangeDirection = (evt) => {
-        console.log('newdir', evt.target.value);
-        this.setState({direction: +evt.target.value});
+    onUpdateSettings = (settings) => {
+        console.log('settings update');
+        this.setState({settings});
     };
 
     render() {
@@ -141,20 +139,12 @@ class Life extends React.Component<any, any> {
         const running = this.state.interval !== false;
         const width = this.props.width;
         const height = this.props.height;
-        const directions = {
-            'right': Direction.RIGHT,
-            'down': Direction.DOWN,
-            'left': Direction.LEFT,
-            'up': Direction.UP
-        };
+
         return <div>
                 <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
                 <button onClick={this.step}>Step</button>
-                <input step={100} value={this.state.speed} onChange={this.updateSpeed} placeholder="Speed" type="number"/>
                 <button onClick={this.reset}>Reset</button>
-                <select value={this.state.direction} onChange={this.onChangeDirection} name="direction" id="direction">
-                    {Object.keys(directions).map(name => <option key={directions[name]} value={directions[name]}>{name}</option>)}
-                </select>
+                <Editor update={this.onUpdateSettings}/>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }

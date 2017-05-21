@@ -61,6 +61,14 @@ export class Preview extends React.Component<any, any> {
                     }
                     ctx.fill();
                 }
+
+                //drawing call to the cell
+                if (cell.car != null) {
+                    //draw car
+                    //temporary we will use rectangle
+                    ctx.fillStyle = cell.car.color;
+                    ctx.fillRect(x + this.cellWidth/3, y + this.cellHeight/3, this.cellWidth/3, this.cellHeight/3)
+                }
             });
         });
     }
