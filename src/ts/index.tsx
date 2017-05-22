@@ -40,13 +40,13 @@ class Life extends React.Component<any, any> {
         for (let i=0; i<height; i++) {
             field[i] = [];
             for (let j=0; j<width; j++) {
-                field[i][j] = new Cell((Math.random() < this.state.settings.density) ? new Car() : null);
-                //field[i][j] = new Cell(null);
+                field[i][j] = new Cell(j, i, Type.EARTH, (Math.random() < this.state.settings.density) ? new Car() : null);
             }
         }
         return field;
     };
     onClick = (pos, button) => {
+        console.log(pos);
         const y = pos.y;
         const x = pos.x;
         let field = this.state.field;
@@ -78,17 +78,15 @@ class Life extends React.Component<any, any> {
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
         const rules = Rules.classic;
-
-        this.setState(
-		{
-			field: field.map((row, rowIndex) => {
-				return row.map((cell, columnIndex) => {
-					//return rules(Object.assign({}, cell), this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
-					return rules(cell, this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
-				});
-			})
-		}
-		);
+        const nextField = JSON.parse(JSON.stringify(this.state.field));
+        field.forEach((row, rowIndex) => {
+            row.forEach((cell, columnIndex) => {
+                rules(field, nextField, cell, this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
+            });
+        });
+        this.setState({
+			field: nextField
+		});
     };
 	
 	getNextCell(cell, i, j) {

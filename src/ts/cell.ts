@@ -14,10 +14,20 @@ export class Cell {
     car: Car; // this is basically content of the cell
 
     direction: Direction; //direction of road
-    type: Type.EARTH; //type of the cell
+    type: Type; //type of the cell
     speedLimit: 60; // speed limit by default in our city, cars don't drive faster than that even if technically car allows that.
 
-    constructor(being = null) {
-        this.car = being;
+    //coordinates
+    x: number;
+    y: number;
+
+    constructor(x, y, type = Type.EARTH, car = null) {
+        this.type = type;
+        this.car = car;
+        this.x = x;
+        this.y = y;
+    }
+    copy() {
+        return new Cell(this.x, this.y, this.type, Object.assign({}, this.car));
     }
 }

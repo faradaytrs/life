@@ -2,21 +2,18 @@ import {Car} from "./car";
 import {Cell, Direction, Type} from "./cell";
 
 export const rules = {
-    classic: (cell, nextcell) => {
-	
+    classic: (currentField, nextField, cell, nextCell) => {
 		// Car will drive off the road and die
-		if (nextcell == null) {
-			cell.car = null;
-			return cell;
-		} 
+		if (nextCell == null) {
+			nextField[cell.y][cell.x].car = null;
+			return;
+		}
 		
 		// Check if the next cell is occupied
-        if (cell.car && nextcell.car == null) {
-			nextcell.car = cell.car;
-			cell.car = null;
+        if (cell.car && nextCell.car == null) {
+            nextField[nextCell.y][nextCell.x].car = cell.car;
+            nextField[cell.y][cell.x].car = null;
         }
-		
-        return cell;
     },
     aging: (cell, neighbours) => {
         const being = cell.car;
