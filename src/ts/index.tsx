@@ -56,7 +56,7 @@ class Life extends React.Component<any, any> {
         if (button === 1) { //left button click
             field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
             field[y][x].direction = settings.direction;
-        } else if (button === 3) {
+        } else if (button === 3) { //right button
             field[y][x].car = (field[y][x].car == null) ? new Car() : null;
         }
 

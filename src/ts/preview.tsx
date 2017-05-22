@@ -83,8 +83,6 @@ export class Preview extends React.Component<any, any> {
         this.drawField(ctx);
     }
     handleClick = (evt) => {
-        event.preventDefault();
-        event.stopPropagation();
         const pos = {
             x: Math.floor(evt.nativeEvent.offsetX/this.cellWidth),
             y: Math.floor(evt.nativeEvent.offsetY/this.cellHeight)
