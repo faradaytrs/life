@@ -83,17 +83,23 @@ export class Preview extends React.Component<any, any> {
         this.drawField(ctx);
     }
     handleClick = (evt) => {
+        event.preventDefault();
+        event.stopPropagation();
         const pos = {
             x: Math.floor(evt.nativeEvent.offsetX/this.cellWidth),
             y: Math.floor(evt.nativeEvent.offsetY/this.cellHeight)
         };
         this.props.onClick(pos, evt.nativeEvent.which);
     };
+    onContextMenu = (e) => {
+        e.preventDefault();
+        this.handleClick(e);
+    };
     render() {
         const width = this.props.width*this.cellWidth;
         const height = this.props.height*this.cellHeight;
         return <div>
-            <canvas onClick={this.handleClick} width={width} height={height} ref={(canvas => this.canvas = canvas)}>1</canvas>
+            <canvas onContextMenu={this.onContextMenu} onClick={this.handleClick} width={width} height={height} ref={(canvas => this.canvas = canvas)}>1</canvas>
         </div>
     }
 }
