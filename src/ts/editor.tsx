@@ -1,8 +1,12 @@
 import * as React from "react";
 import {Direction} from "./cell";
 
-enum EditorMode {
+export enum EditorMode {
     NEW, EDIT
+}
+
+export enum Add {
+    ROAD, CAR
 }
 
 export class Editor extends React.Component<any, any> {
@@ -12,7 +16,8 @@ export class Editor extends React.Component<any, any> {
             direction: Direction.RIGHT,
             speed: 100,
             density: 0.3,
-            mode: EditorMode.NEW
+            mode: EditorMode.NEW,
+            add: Add.ROAD
         }
     }
     updateSpeed = (evt) => {
@@ -41,16 +46,25 @@ export class Editor extends React.Component<any, any> {
         console.log('newdir', evt.target.value);
         this.setState({direction: +evt.target.value});
     };
-    newMode() {
+    onChangeAddMode = (evt) => {
+        this.setState({add: evt.target.value})
+    };
+    newMode = () => {
+        const addModes = {
+            'road': Add.ROAD,
+            'car': Add.CAR
+        };
         return <div>
-            new
+            <select value={this.state.add} onChange={this.onChangeAddMode} name="cellType" id="cellType">
+                {Object.keys(addModes).map(key => <option key={key} value={addModes[key]}>{key}</option>)}
+            </select>
         </div>;
-    }
-    editMode() {
+    };
+    editMode = () => {
         return <div>
             edit
         </div>;
-    }
+    };
     changeMode = (evt) => {
         this.setState({mode: evt.target.value});
     }

@@ -4,7 +4,7 @@ import {Preview} from './preview';
 import {Car} from './car';
 import {Cell, Direction, Type} from "./cell";
 import {rules as Rules} from "./rules";
-import {Editor} from "./editor";
+import {Add, Editor, EditorMode} from "./editor";
 
 enum FieldType {
     INFINITE, FINITE
@@ -20,7 +20,9 @@ class Life extends React.Component<any, any> {
             settings: {
                 direction: Direction.RIGHT,
                 speed: 100,
-                density: 0.3
+                density: 0.3,
+                mode: EditorMode.NEW,
+                add: Add.ROAD
             }
         };
         this.state.field = this.initField(width, height);
@@ -51,9 +53,15 @@ class Life extends React.Component<any, any> {
         const x = pos.x;
         let field = this.state.field;
         //field[y][x].car = (field[y][x].car != null) ? null : new Car();
-        const type = field[y][x].type;
-        field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
-        field[y][x].direction = this.state.settings.direction;
+        if (this.state.settings.add == Add.ROAD) {
+            const type = field[y][x].type;
+            field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
+            field[y][x].direction = this.state.settings.direction;
+        } else if (this.state.settings.add == Add.CAR) {
+            const car = field[y][x].car;
+            field[y][x].car = (car == null) ? new Car() : null;
+        }
+
         this.setState({
             field: field
         });
