@@ -1,17 +1,21 @@
 import {Car} from "./car";
+import {Cell, Direction, Type} from "./cell";
 
 export const rules = {
-    classic: (cell, neighbours) => {
-        const being = cell.car;
-        if (being && neighbours.length >= 4) {
-            cell.car = null;
+    classic: (cell, nextcell) => {
+	
+		// Car will drive off the road and die
+		if (nextcell == null) {
+			cell.car = null;
+			return cell;
+		} 
+		
+		// Check if the next cell is occupied
+        if (cell.car && nextcell.car == null) {
+			nextcell.car = cell.car;
+			cell.car = null;
         }
-        if (being && neighbours.length <= 1) {
-            cell.car = null;
-        }
-        if (being === null && neighbours.length === 3) {
-            cell.car = new Car(neighbours);
-        }
+		
         return cell;
     },
     aging: (cell, neighbours) => {

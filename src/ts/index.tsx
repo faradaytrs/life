@@ -77,14 +77,45 @@ class Life extends React.Component<any, any> {
         // 3. Если клетка без фишки имеет ровно трех соседей, то в ней происходит рождение (на клетку кладется фишка).
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
-        const rules = Rules[this.state.rules];
+        const rules = Rules.classic;
 
-        this.setState({field: field.map((row, rowIndex) => {
-            return row.map((cell, columnIndex) => {
-                return rules(Object.assign({}, cell), this.getNeighbours(rowIndex, columnIndex));
-            });
-        })});
+        this.setState(
+		{
+			field: field.map((row, rowIndex) => {
+				return row.map((cell, columnIndex) => {
+					//return rules(Object.assign({}, cell), this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
+					return rules(cell, this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
+				});
+			})
+		}
+		);
     };
+	
+	getNextCell(cell, i, j) {
+	
+		let nextcell = null;
+	
+		if (cell.type == Type.EARTH)
+			return null;
+	
+		if (cell.direction == Direction.LEFT) {
+			nextcell = this.state.field[i][j-1];
+		} else if (cell.direction == Direction.RIGHT) {
+			nextcell = this.state.field[i][j+1];
+		} else if (cell.direction == Direction.UP) {
+			nextcell = this.state.field[i-1][j];
+		} else if (cell.direction == Direction.DOWN) {
+			nextcell = this.state.field[i+1][j];
+		} else {
+			return null;
+		}
+		
+		if (nextcell.type != Type.ROAD)
+			return null;
+		
+		return nextcell;
+	}
+	
     getNeighbours(i, j) {
         const field = this.state.field;
         const rowLimit = field.length-1;
@@ -121,12 +152,14 @@ class Life extends React.Component<any, any> {
             return neighbours;
         }, []);
     }
+	
     componentDidUpdate = (evt) => {
         if (this.state.interval !== false) {
             this.removeRunner();
             this.setRunner(this.state.settings.speed);
         }
     };
+	
     reset = () => {
         const width = this.props.width;
         const height = this.props.height;
