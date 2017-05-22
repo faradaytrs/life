@@ -140,11 +140,14 @@ class Life extends React.Component<any, any> {
         const width = this.props.width;
         const height = this.props.height;
 
+        const controls = {
+            reset: this.reset,
+            run: this.runGame,
+            step: this.step
+        };
+
         return <div>
-                <button onClick={this.runGame}>{running ? 'Stop' : 'Run'}</button>
-                <button onClick={this.step}>Step</button>
-                <button onClick={this.reset}>Reset</button>
-                <Editor update={this.onUpdateSettings}/>
+                <Editor controls={controls} running={running} update={this.onUpdateSettings}/>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
             </div>
     }
