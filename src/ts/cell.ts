@@ -28,6 +28,8 @@ export class Cell {
         this.y = y;
     }
     copy() {
-        return new Cell(this.x, this.y, this.type, Object.assign({}, this.car));
+        let cell = new Cell(this.x, this.y, this.type, this.car);
+        let car = this.car == null ? null : this.car.copy();
+        return Object.assign(cell, this, {car: car})
     }
 }

@@ -17,4 +17,8 @@ export class Car {
     randColor(shift = 0) {
         return Math.floor(Math.random()*0xFF) << shift
     }
+    copy() {
+        let car = new Car();
+        return Object.assign(car, this);
+    }
 }

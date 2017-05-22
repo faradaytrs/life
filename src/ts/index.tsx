@@ -78,7 +78,8 @@ class Life extends React.Component<any, any> {
         // 4. Если не выполнено ни одно из перечисленных выше условий, состояние клетки не изменяется.
         const field = this.state.field;
         const rules = Rules.classic;
-        const nextField = JSON.parse(JSON.stringify(this.state.field));
+
+        const nextField = this.state.field.map(row => row.map(cell => cell.copy()));
         field.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
                 rules(field, nextField, cell, this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
