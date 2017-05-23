@@ -58,9 +58,12 @@ export class Editor extends React.Component<any, any> {
         };
 
         return <div>
+            {/*{Object.keys(this.props.controls).map(key => <button onClick={this.props.controls[key]}>{key}</button>)}*/}
             <button onClick={this.props.controls.run}>{this.props.running ? 'Stop' : 'Run'}</button>
             <button onClick={this.props.controls.step}>Step</button>
             <button onClick={this.props.controls.reset}>Reset</button>
+            <button onClick={this.props.controls.save}>Save</button>
+            <button onClick={this.props.controls.load}>Load</button>
             <input step={100} value={this.state.speed} onChange={this.updateSpeed} placeholder="Speed" type="number"/>
             <select value={this.state.direction} onChange={this.onChangeDirection} name="direction" id="direction">
                 {Object.keys(directions).map(name => <option key={directions[name]} value={directions[name]}>{name}</option>)}

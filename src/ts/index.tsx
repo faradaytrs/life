@@ -173,6 +173,16 @@ class Life extends React.Component<any, any> {
         this.setState({settings});
     };
 
+    save = () => {
+        localStorage.setItem('config', JSON.stringify(this.state.field));
+    };
+
+    load = (evt, config = 'config') => {
+        const field = JSON.parse(localStorage.getItem(config));
+        console.log('load', field);
+        this.setState({field});
+    };
+
     render() {
         const field = this.state.field;
         const running = this.state.interval !== false;
@@ -182,7 +192,9 @@ class Life extends React.Component<any, any> {
         const controls = {
             reset: this.reset,
             run: this.runGame,
-            step: this.step
+            step: this.step,
+            save: this.save,
+            load: this.load
         };
 
         return <div>
