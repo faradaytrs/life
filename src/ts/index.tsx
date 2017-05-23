@@ -177,8 +177,18 @@ class Life extends React.Component<any, any> {
         localStorage.setItem('config', JSON.stringify(this.state.field));
     };
 
+    restoreField(field) {
+        return field.map(row => row.map(cell => {
+            const newCell = Object.assign(new Cell(cell.x, cell.y), cell);
+            if (cell.car != null) {
+                newCell.car = Object.assign(new Car(), cell.car);
+            }
+            return newCell;
+        }));
+    }
+
     load = (proxy, evt, config = 'config') => {
-        const field = JSON.parse(localStorage.getItem(config));
+        const field = this.restoreField(JSON.parse(localStorage.getItem(config)));
         this.setState({field});
     };
 
