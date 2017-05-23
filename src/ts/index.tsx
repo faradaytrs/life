@@ -177,9 +177,8 @@ class Life extends React.Component<any, any> {
         localStorage.setItem('config', JSON.stringify(this.state.field));
     };
 
-    load = (evt, config = 'config') => {
+    load = (proxy, evt, config = 'config') => {
         const field = JSON.parse(localStorage.getItem(config));
-        console.log('load', field);
         this.setState({field});
     };
 
