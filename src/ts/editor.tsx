@@ -58,7 +58,7 @@ export class Editor extends React.Component<any, any> {
         };
 
         return <div>
-            <button onClick={this.props.controls.runGame}>{this.props.running ? 'Stop' : 'Run'}</button>
+            <button onClick={this.props.controls.run}>{this.props.running ? 'Stop' : 'Run'}</button>
             <button onClick={this.props.controls.step}>Step</button>
             <button onClick={this.props.controls.reset}>Reset</button>
             <input step={100} value={this.state.speed} onChange={this.updateSpeed} placeholder="Speed" type="number"/>

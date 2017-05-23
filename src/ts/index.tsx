@@ -26,9 +26,9 @@ class Life extends React.Component<any, any> {
         this.state.field = this.initField(width, height);
     }
     setRunner = (speed = this.state.settings.speed) => {
-        const rules = Rules[this.state.rules];
+        console.log(speed);
         this.setState({
-            interval: setInterval(this.step.bind(this, rules), speed)
+            interval: setInterval(this.step, speed)
         });
     };
     removeRunner() {
@@ -65,8 +65,9 @@ class Life extends React.Component<any, any> {
         });
     };
     runGame = (evt) => {
+        console.log(1);
         if (this.state.interval === false) {
-            this.setRunner();
+            this.setRunner(this.state.settings.speed);
         } else {
             this.removeRunner();
         }
@@ -152,12 +153,12 @@ class Life extends React.Component<any, any> {
         }, []);
     }
 	
-    componentDidUpdate = (evt) => {
-        if (this.state.interval !== false) {
-            this.removeRunner();
-            this.setRunner(this.state.settings.speed);
-        }
-    };
+    // componentDidUpdate = (evt) => {
+    //     if (this.state.interval !== false) {
+    //         this.removeRunner();
+    //         this.setRunner(this.state.settings.speed);
+    //     }
+    // };
 	
     reset = () => {
         const width = this.props.width;

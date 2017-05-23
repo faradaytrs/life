@@ -19,8 +19,6 @@ export class Preview extends React.Component<any, any> {
         let xBegin = 0;
         let yBegin = 0;
 
-        console.log(field);
-
         if (renderModel) {
             const cursorPos = this.state.cursorPos;
             xBegin = cursorPos.x;
