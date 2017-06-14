@@ -10,7 +10,7 @@ export const rules = {
 		}
 		
 		// Check if the next cell is occupied
-        if (cell.car && nextCell.car == null) {
+        if (cell.car && nextCell.car == null && nextField[nextCell.y][nextCell.x].car == null) {
             nextField[nextCell.y][nextCell.x].car = cell.car;
             nextField[cell.y][cell.x].car = null;
         }

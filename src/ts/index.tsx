@@ -93,6 +93,7 @@ class Life extends React.Component<any, any> {
 	
 	getNextCell(cell, i, j) {
 	
+	/*
 		let nextcell = null;
 	
 		if (cell.type == Type.EARTH)
@@ -113,7 +114,32 @@ class Life extends React.Component<any, any> {
 		if (nextcell.type != Type.ROAD)
 			return null;
 		
-		return nextcell;
+		return nextcell;*/
+		
+		
+		let nextcells = [];
+	
+		if (cell.type == Type.EARTH)
+			return null;
+	
+		//if (cell.direction != Direction.LEFT) 
+			if (this.state.field[i][j+1].type == Type.ROAD && (this.state.field[i][j+1].direction == Direction.RIGHT || cell.direction == Direction.RIGHT))
+				nextcells.push(this.state.field[i][j+1]);
+		
+		//if (cell.direction != Direction.RIGHT)
+			if (this.state.field[i][j-1].type == Type.ROAD && (this.state.field[i][j-1].direction == Direction.LEFT || cell.direction == Direction.LEFT))
+				nextcells.push(this.state.field[i][j-1]);
+		
+		//if (cell.direction != Direction.UP) 
+			if (this.state.field[i+1][j].type == Type.ROAD && (this.state.field[i+1][j].direction == Direction.DOWN || cell.direction == Direction.DOWN))
+				nextcells.push(this.state.field[i+1][j]);
+		
+		//if (cell.direction != Direction.DOWN)
+			if (this.state.field[i-1][j].type == Type.ROAD && (this.state.field[i-1][j].direction == Direction.UP || cell.direction == Direction.UP))
+				nextcells.push(this.state.field[i-1][j]);
+		
+		
+		return nextcells[Math.floor(Math.random() * nextcells.length)];
 	}
 	
     getNeighbours(i, j) {
