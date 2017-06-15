@@ -68,6 +68,18 @@ export class Preview extends React.Component<any, any> {
                         ctx.fillStyle = cell.car.color;
                         ctx.fillRect(x + this.cellWidth/3, y + this.cellHeight/3, this.cellWidth/3, this.cellHeight/3)
                     }
+
+                    //drawing traffic light
+                    if (true) { //if that cell has traffic light
+                        if (false) { //if state is green
+                            ctx.fillStyle = 'green';
+                        } else {
+                            ctx.fillStyle = 'red';
+                        }
+                        ctx.beginPath();
+                        ctx.arc(x + 3/4*this.cellWidth,y+1/4*this.cellHeight,1/8*this.cellHeight,0,2*Math.PI);
+                        ctx.fill();
+                    }
                 }
 
             });
