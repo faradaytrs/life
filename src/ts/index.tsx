@@ -58,10 +58,6 @@ class Life extends React.Component<any, any> {
             field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
             field[y][x].direction = settings.direction;
 			
-			// TEMP
-			if (Math.random() < 0.25)
-				field[y][x].trafficLight = new TrafficLight();
-			
         } else if (button === 3) { //right button
             field[y][x].car = (field[y][x].car == null) ? new Car() : null;
         } else if (button === 2) {

@@ -5,6 +5,7 @@ import {Cell} from "./cell";
 export class Car {
     color: string; // here will be a car color
     speed: number; // maximum speed that this car can drive
+	counter: number;
 
     constructor(parents = []) {
         this.speed = Math.floor(Math.random() * 80) + 40; //car speed is random form 80 to 120

@@ -24,16 +24,33 @@ export const rules = {
 		}
 		
 		// Check if traffic light is red
-		
 		if (cell.trafficLight != null) {
 			if (cell.trafficLight.isRed)
 				return;
 		}
 		
-		// Check if the next cell is occupied
-        if (cell.car && nextCell.car == null && nextField[nextCell.y][nextCell.x].car == null) {
-            nextField[nextCell.y][nextCell.x].car = cell.car;
-            nextField[cell.y][cell.x].car = null;
+		
+		
+		// Check if there's a car on this cell
+        if (cell.car) {
+			
+			if (nextCell.car == null && nextField[nextCell.y][nextCell.x].car == null) {
+			
+				// The car is moving
+				cell.car.counter += cell.car.speed;
+				
+				console.log(cell.car);
+			
+				if (cell.car.counter >= 100) {
+					nextField[nextCell.y][nextCell.x].car = cell.car;
+					nextField[cell.y][cell.x].car = null;
+					
+					cell.car.counter -= 100;
+				}
+			} else {
+				// The car is not moving due to another car being in the way
+				//cell.car.counter = 0;
+			}	
         }
     }
 };
