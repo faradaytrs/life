@@ -5,6 +5,7 @@ import {Car} from './car';
 import {Cell, Direction, Type} from "./cell";
 import {rules as Rules} from "./rules";
 import {Editor} from "./editor";
+import {TrafficLight} from "./trafficlight";
 
 enum FieldType {
     INFINITE, FINITE
@@ -56,9 +57,16 @@ class Life extends React.Component<any, any> {
         if (button === 1) { //left button click
             field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
             field[y][x].direction = settings.direction;
+			
+			// TEMP
+			if (Math.random() < 0.25)
+				field[y][x].trafficLight = new TrafficLight();
+			
         } else if (button === 3) { //right button
             field[y][x].car = (field[y][x].car == null) ? new Car() : null;
-        }
+        } else if (button === 2) {
+			field[y][x].trafficLight = (field[y][x].trafficLight == null) ? new TrafficLight() : null;
+		}
 
         this.setState({
             field: field
@@ -93,50 +101,22 @@ class Life extends React.Component<any, any> {
 	
 	getNextCell(cell, i, j) {
 	
-	/*
-		let nextcell = null;
-	
-		if (cell.type == Type.EARTH)
-			return null;
-	
-		if (cell.direction == Direction.LEFT) {
-			nextcell = this.state.field[i][j-1];
-		} else if (cell.direction == Direction.RIGHT) {
-			nextcell = this.state.field[i][j+1];
-		} else if (cell.direction == Direction.UP) {
-			nextcell = this.state.field[i-1][j];
-		} else if (cell.direction == Direction.DOWN) {
-			nextcell = this.state.field[i+1][j];
-		} else {
-			return null;
-		}
-		
-		if (nextcell.type != Type.ROAD)
-			return null;
-		
-		return nextcell;*/
-		
-		
 		let nextcells = [];
 	
 		if (cell.type == Type.EARTH)
 			return null;
 	
-		//if (cell.direction != Direction.LEFT) 
-			if (this.state.field[i][j+1].type == Type.ROAD && (this.state.field[i][j+1].direction == Direction.RIGHT || cell.direction == Direction.RIGHT))
-				nextcells.push(this.state.field[i][j+1]);
+		if (this.state.field[i][j+1].type == Type.ROAD && (this.state.field[i][j+1].direction == Direction.RIGHT || cell.direction == Direction.RIGHT))
+			nextcells.push(this.state.field[i][j+1]);
 		
-		//if (cell.direction != Direction.RIGHT)
-			if (this.state.field[i][j-1].type == Type.ROAD && (this.state.field[i][j-1].direction == Direction.LEFT || cell.direction == Direction.LEFT))
-				nextcells.push(this.state.field[i][j-1]);
+		if (this.state.field[i][j-1].type == Type.ROAD && (this.state.field[i][j-1].direction == Direction.LEFT || cell.direction == Direction.LEFT))
+			nextcells.push(this.state.field[i][j-1]);
 		
-		//if (cell.direction != Direction.UP) 
-			if (this.state.field[i+1][j].type == Type.ROAD && (this.state.field[i+1][j].direction == Direction.DOWN || cell.direction == Direction.DOWN))
-				nextcells.push(this.state.field[i+1][j]);
+		if (this.state.field[i+1][j].type == Type.ROAD && (this.state.field[i+1][j].direction == Direction.DOWN || cell.direction == Direction.DOWN))
+			nextcells.push(this.state.field[i+1][j]);
 		
-		//if (cell.direction != Direction.DOWN)
-			if (this.state.field[i-1][j].type == Type.ROAD && (this.state.field[i-1][j].direction == Direction.UP || cell.direction == Direction.UP))
-				nextcells.push(this.state.field[i-1][j]);
+		if (this.state.field[i-1][j].type == Type.ROAD && (this.state.field[i-1][j].direction == Direction.UP || cell.direction == Direction.UP))
+			nextcells.push(this.state.field[i-1][j]);
 		
 		
 		return nextcells[Math.floor(Math.random() * nextcells.length)];

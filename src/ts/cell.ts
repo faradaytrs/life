@@ -1,4 +1,5 @@
 import {Car} from './car';
+import {TrafficLight} from "./trafficlight";
 
 //Cell is road or not
 export enum Type {
@@ -12,7 +13,8 @@ export enum Direction {
 
 export class Cell {
     car: Car; // this is basically content of the cell
-
+	trafficLight: TrafficLight;
+	
     direction: Direction; //direction of road
     type: Type; //type of the cell
     speedLimit: 60; // speed limit by default in our city, cars don't drive faster than that even if technically car allows that.
@@ -21,11 +23,12 @@ export class Cell {
     x: number;
     y: number;
 
-    constructor(x, y, type = Type.EARTH, car = null) {
+    constructor(x, y, type = Type.EARTH, car = null, trafficLight = null) {
         this.type = type;
         this.car = car;
         this.x = x;
         this.y = y;
+		this.trafficLight = trafficLight;
     }
     copy() {
         let cell = new Cell(this.x, this.y, this.type, this.car);

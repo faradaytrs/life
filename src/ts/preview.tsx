@@ -70,11 +70,11 @@ export class Preview extends React.Component<any, any> {
                     }
 
                     //drawing traffic light
-                    if (true) { //if that cell has traffic light
-                        if (false) { //if state is green
-                            ctx.fillStyle = 'green';
-                        } else {
+                    if (cell.trafficLight != null) { //if that cell has traffic light
+                        if (cell.trafficLight.isRed) { //if state is red
                             ctx.fillStyle = 'red';
+                        } else {
+                            ctx.fillStyle = 'green';
                         }
                         ctx.beginPath();
                         ctx.arc(x + 3/4*this.cellWidth,y+1/4*this.cellHeight,1/8*this.cellHeight,0,2*Math.PI);
