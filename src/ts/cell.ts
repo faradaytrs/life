@@ -17,18 +17,19 @@ export class Cell {
 	
     direction: Direction; //direction of road
     type: Type; //type of the cell
-    speedLimit: 60; // speed limit by default in our city, cars don't drive faster than that even if technically car allows that.
+    speedLimit: number; // speed limit by default in our city, cars don't drive faster than that even if technically car allows that.
 
     //coordinates
     x: number;
     y: number;
 
-    constructor(x, y, type = Type.EARTH, car = null, trafficLight = null) {
+    constructor(x, y, type = Type.EARTH, car = null, trafficLight = null, speedLimit = 60) {
         this.type = type;
         this.car = car;
         this.x = x;
         this.y = y;
 		this.trafficLight = trafficLight;
+		this.speedLimit = speedLimit;
     }
     copy() {
         let cell = new Cell(this.x, this.y, this.type, this.car);

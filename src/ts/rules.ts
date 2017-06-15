@@ -39,7 +39,7 @@ export const rules = {
 			if (cellAhead.car == null && nextField[cellAhead.y][cellAhead.x].car == null) {
 			
 				// The car is moving
-				newCell.car.counter += cell.car.speed;
+				newCell.car.counter += Math.min(cell.car.speed, cell.speedLimit);
 				
 				//console.log(cell.car);
 			
