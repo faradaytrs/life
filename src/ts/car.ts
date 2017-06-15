@@ -10,6 +10,7 @@ export class Car {
     constructor(parents = []) {
         this.speed = Math.floor(Math.random() * 80) + 40; //car speed is random form 80 to 120
         this.color = this.generateColor();
+		this.counter = 0;
     }
     generateColor() {
         const color = this.randColor(16) + this.randColor(8) + this.randColor();

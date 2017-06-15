@@ -35,19 +35,19 @@ export const rules = {
 		
 		// Check if there's a car on this cell
         if (cell.car) {
-			
+		
 			if (cellAhead.car == null && nextField[cellAhead.y][cellAhead.x].car == null) {
 			
 				// The car is moving
 				newCell.car.counter += cell.car.speed;
 				
-				console.log(cell.car);
+				//console.log(cell.car);
 			
-				if (cell.car.counter >= 100) {
+				if (newCell.car.counter >= 120) {
 					nextField[cellAhead.y][cellAhead.x].car = cell.car;
 					nextField[cell.y][cell.x].car = null;
 
-					newCell.car.counter -= 100;
+					nextField[cellAhead.y][cellAhead.x].car.counter -= 120;
 				}
 			} else {
 				// The car is not moving due to another car being in the way
