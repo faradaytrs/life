@@ -52,7 +52,7 @@ export const rules = {
 			} else {
 				// The car is not moving due to another car being in the way
 				//cell.car.counter = 0;
-			}	
+			}
         }
     }
 };

@@ -21,7 +21,17 @@ class Life extends React.Component<any, any> {
             settings: {
                 direction: Direction.RIGHT,
                 speed: 100,
-                density: 0.3
+                density: 0.3,
+                speedLimit: 60,
+                car: {
+                    speed: 60,
+                    counter: 0
+                },
+                trafficLight: {
+                    greenDuration: 20,
+                    redDuration: 10,
+                    isRed: false
+                }
             }
         };
         this.state.field = this.initField(width, height);
@@ -53,15 +63,13 @@ class Life extends React.Component<any, any> {
         let field = this.state.field;
         const settings = this.state.settings;
         //field[y][x].car = (field[y][x].car != null) ? null : new Car();
-        const type = field[y][x].type;
         if (button === 1) { //left button click
-            field[y][x].type = (type === Type.ROAD) ? Type.EARTH : Type.ROAD;
+            field[y][x].type = (field[y][x].type === Type.ROAD) ? Type.EARTH : Type.ROAD;
             field[y][x].direction = settings.direction;
-			
         } else if (button === 3) { //right button
-            field[y][x].car = (field[y][x].car == null) ? new Car() : null;
+            field[y][x].car = (field[y][x].car == null) ? Object.assign(new Car(), settings.car) : null;
         } else if (button === 2) {
-			field[y][x].trafficLight = (field[y][x].trafficLight == null) ? new TrafficLight() : null;
+			field[y][x].trafficLight = (field[y][x].trafficLight == null) ? Object.assign(new TrafficLight(), settings.trafficLight) : null;
 		}
 
         this.setState({
@@ -85,39 +93,39 @@ class Life extends React.Component<any, any> {
         const rules = Rules.classic;
 
         const nextField = this.state.field.map(row => row.map(cell => cell.copy()));
-        field.forEach((row, rowIndex) => {
-            row.forEach((cell, columnIndex) => {
-                rules(field, nextField, cell, this.getNextCell(cell, rowIndex, columnIndex));//this.getNeighbours(rowIndex, columnIndex));
+        field.map((row, rowIndex) => {
+            return row.forEach((cell, columnIndex) => {
+                rules(field, nextField, cell, this.getNextCell(cell, rowIndex, columnIndex));
             });
         });
         this.setState({
 			field: nextField
 		});
     };
-	
+
 	getNextCell(cell, i, j) {
-	
+
 		let nextcells = [];
-	
+
 		if (cell.type == Type.EARTH)
 			return null;
-	
+
 		if (this.state.field[i][j+1].type == Type.ROAD && (this.state.field[i][j+1].direction == Direction.RIGHT || cell.direction == Direction.RIGHT))
 			nextcells.push(this.state.field[i][j+1]);
-		
+
 		if (this.state.field[i][j-1].type == Type.ROAD && (this.state.field[i][j-1].direction == Direction.LEFT || cell.direction == Direction.LEFT))
 			nextcells.push(this.state.field[i][j-1]);
-		
+
 		if (this.state.field[i+1][j].type == Type.ROAD && (this.state.field[i+1][j].direction == Direction.DOWN || cell.direction == Direction.DOWN))
 			nextcells.push(this.state.field[i+1][j]);
-		
+
 		if (this.state.field[i-1][j].type == Type.ROAD && (this.state.field[i-1][j].direction == Direction.UP || cell.direction == Direction.UP))
 			nextcells.push(this.state.field[i-1][j]);
-		
-		
+
+
 		return nextcells[Math.floor(Math.random() * nextcells.length)];
 	}
-	
+
     getNeighbours(i, j) {
         const field = this.state.field;
         const rowLimit = field.length-1;
@@ -154,14 +162,14 @@ class Life extends React.Component<any, any> {
             return neighbours;
         }, []);
     }
-	
+
     // componentDidUpdate = (evt) => {
     //     if (this.state.interval !== false) {
     //         this.removeRunner();
     //         this.setRunner(this.state.settings.speed);
     //     }
     // };
-	
+
     reset = () => {
         const width = this.props.width;
         const height = this.props.height;

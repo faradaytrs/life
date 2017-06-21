@@ -1,9 +1,4 @@
-
-
-
-
 export class TrafficLight {
-
 
     greenDuration: number; //How long the traffic light is to remain green
 	redDuration: number; //How long the traffic light is to remain red
