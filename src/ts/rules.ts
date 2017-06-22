@@ -43,15 +43,15 @@ export const rules = {
 				
 				//console.log(cell.car);
 			
-				if (newCell.car.counter >= 120) {
+				if (newCell.car.counter >= 64) {
 					nextField[cellAhead.y][cellAhead.x].car = cell.car;
 					nextField[cell.y][cell.x].car = null;
 
-					nextField[cellAhead.y][cellAhead.x].car.counter -= 120;
+					nextField[cellAhead.y][cellAhead.x].car.counter -= 64;
 				}
 			} else {
 				// The car is not moving due to another car being in the way
-				//cell.car.counter = 0;
+				cell.car.counter = 0;
 			}
         }
     }

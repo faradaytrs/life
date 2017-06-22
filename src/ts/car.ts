@@ -8,7 +8,7 @@ export class Car {
 	counter: number;
 
     constructor(parents = []) {
-        this.speed = Math.floor(Math.random() * 80) + 40; //car speed is random form 80 to 120
+        this.speed = Math.floor(Math.random() * 10) + 20; //car speed is random form 80 to 120
         this.color = this.generateColor();
 		this.counter = 0;
     }

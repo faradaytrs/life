@@ -32,9 +32,13 @@ class Life extends React.Component<any, any> {
                     redDuration: 10,
                     isRed: false
                 }
-            }
+            },
+            intervalCounter: 4 * 10,
+            stepCounter: 0
         };
         this.state.field = this.initField(width, height);
+        this.results = [];
+        this.results[10] = [[], [], [], []];
     }
     setRunner = (speed = this.state.settings.speed) => {
         console.log(speed);
@@ -93,11 +97,72 @@ class Life extends React.Component<any, any> {
         const rules = Rules.classic;
 
         const nextField = this.state.field.map(row => row.map(cell => cell.copy()));
+
+        const stepCounter = this.state.stepCounter;
+        const intervalCounter = this.state.intervalCounter;
+
+        // set streetlight configuration
+        nextField[9][26].trafficLight.redDuration = intervalCounter;
+        nextField[7][27].trafficLight.redDuration = intervalCounter;
+        nextField[8][29].trafficLight.redDuration = intervalCounter;
+        nextField[10][28].trafficLight.redDuration = intervalCounter;
+        nextField[9][26].trafficLight.greenDuration = intervalCounter;
+        nextField[7][27].trafficLight.greenDuration = intervalCounter;
+        nextField[8][29].trafficLight.greenDuration = intervalCounter;
+        nextField[10][28].trafficLight.greenDuration = intervalCounter;
+
         field.map((row, rowIndex) => {
             return row.forEach((cell, columnIndex) => {
                 rules(field, nextField, cell, this.getNextCell(cell, rowIndex, columnIndex));
             });
         });
+        if (stepCounter == 4 * 120)  {
+            this.removeRunner();
+            this.load();
+            this.results[(intervalCounter+20)/4] = [[], [], [], []];
+            this.setState({stepCounter:0, intervalCounter: intervalCounter + 20});
+            console.log('new interval', intervalCounter/4, this.results.map((el) => el[0].length + el[1].length + el[2].length + el[3].length))
+
+            //check cars
+            if (intervalCounter >= 60 * 4) {
+                this.removeRunner();
+                console.log(JSON.stringify(this.results.map((el) => el[0].length + el[1].length + el[2].length + el[3].length)));
+             else {
+                    setTimeout(() => this.setRunner(), 150);}
+            }
+        } else {
+            this.setState({stepCounter: stepCounter + 1});
+            if (nextField[7][28].car != null) {
+                const lastIndex = this.results[intervalCounter/4][0].length -1;
+                const color = nextField[7][28].car.color;
+                if ( this.results[intervalCounter/4][0][lastIndex] != color) {
+                    this.results[intervalCounter/4][0].push(color);
+                }
+            }
+            if (nextField[8][26].car != null) {
+                const lastIndex = this.results[intervalCounter/4][1].length -1;
+                const color = nextField[8][26].car.color;
+                if ( this.results[intervalCounter/4][1][lastIndex] != color) {
+                    this.results[intervalCounter/4][1].push(color);
+                }
+            }
+            if (nextField[10][27].car != null) {
+                const lastIndex = this.results[intervalCounter/4][2].length -1;
+                const color = nextField[10][27].car.color;
+                if ( this.results[intervalCounter/4][2][lastIndex] != color) {
+                    this.results[intervalCounter/4][2].push(color);
+                }
+            }
+            if (nextField[9][29].car != null) {
+                //console.log(intervalCounter/4, this.results[intervalCounter/4]);
+                const lastIndex = this.results[intervalCounter/4][3].length -1;
+                const color = nextField[9][29].car.color;
+                if ( this.results[intervalCounter/4][3][lastIndex] != color) {
+                    this.results[intervalCounter/4][3].push(color);
+                }
+            }
+
+        }
         this.setState({
 			field: nextField
 		});
@@ -198,7 +263,7 @@ class Life extends React.Component<any, any> {
     }
 
     load = (proxy, evt, config = 'config') => {
-        const field = this.restoreField(JSON.parse(localStorage.getItem(config)));
+        const field = this.restoreField(JSON.parse(localStorage.getItem('config')));
         this.setState({field});
     };
 
@@ -219,6 +284,14 @@ class Life extends React.Component<any, any> {
         return <div>
                 <Editor controls={controls} running={running} update={this.onUpdateSettings}/>
                 <Preview width={width} height={height} field={field} onClick={this.onClick}/>
+                <table>
+                    {this.results.map((el, key) => {
+                        return <tr>
+                            <td>{key}</td>
+                            <td>{el[0].length + el[1].length + el[2].length + el[3].length}</td>
+                        </tr>
+                    })}
+                </table>
             </div>
     }
 }
